@@ -35,8 +35,32 @@ export default defineConfig({
   projects: [
     // here it is for execution pipeline
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      // this phase is for logging of the user and store the cookies into storage file
+      name: "login",
+      use: {
+        ...devices["Desktop Chrome"]
+      },
+      testMatch: "**/login.setup.ts",
+    },
+    {
+      name: "teardown",
+      use: {
+        ...devices["Desktop Chrome"]
+      },
+      testMatch: "**/global.teardown.ts",
+    },
+    // main tests to run
+    {
+      name: "Logged In tests",
+      use: {
+        ...devices["Desktop Chrome"],
+        // storageState to use
+        storageState: STORAGE_STATE,
+      },
+      // by setting login dependencies , Playwright waits until phase 1 project completes
+      dependencies: ["login"],
+      teardown: "teardown",
+      testMatch: "**/*.spec.ts",
     },
   ]
 })
