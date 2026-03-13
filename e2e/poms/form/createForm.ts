@@ -36,7 +36,7 @@ export default class FormCreationPage {
         email,
         phoneNumber
     }: SubmissionDetails) => {
-        await this.page.getByTestId('submissions-tab').click();
+        await this.page.getByTestId(CREATE_FORM_SELECTORS.submissionTab).click();
 
         // as it is sorted by time so our submission will be on top
         const submissionRow = this.page.getByRole('row').filter({ hasText: email }).first();
@@ -44,15 +44,15 @@ export default class FormCreationPage {
         await expect(submissionRow).toBeVisible();
         await expect(submissionRow.getByText(name)).toBeVisible();
         await expect(submissionRow.getByText(email)).toBeVisible();
-        await expect(submissionRow.getByText(phoneNumber.replaceAll('-' , ' '), { exact: false })).toBeVisible();
+        await expect(submissionRow.getByText(phoneNumber.replaceAll('-', ' '), { exact: false })).toBeVisible();
     }
 
 
-    deleteForm = async() => {
-        await this.page.getByTestId('neeto-molecules-menu-button').click();
-        await this.page.getByTestId('form-delete-button').click();
-        await this.page.getByTestId('delete-archive-alert-archive-checkbox').click();
-        await this.page.getByTestId('delete-archive-alert-delete-button').click();
+    deleteForm = async () => {
+        await this.page.getByTestId(CREATE_FORM_SELECTORS.menuButton).click();
+        await this.page.getByTestId(CREATE_FORM_SELECTORS.formDeleteButton).click();
+        await this.page.getByTestId(CREATE_FORM_SELECTORS.alertCheckboxButton).click();
+        await this.page.getByTestId(CREATE_FORM_SELECTORS.alertDeleteButton).click();
     }
 
 }

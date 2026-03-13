@@ -16,6 +16,12 @@ test.describe("Form Creation", () => {
         validPhone = process.env.FORM_PHONE_NUMBER!;
     });
 
+    test.afterEach(async ({ formCreationPage }) => {
+        await test.step('Cleanup: Delete form', async () => {
+            await formCreationPage.deleteForm();
+        })
+    })
+
     test("Create and submit a form", async ({ formCreationPage, dashboardPage, page }) => {
         await test.step("Add a new form", async () => {
             // from dashboard go to formCreation page
@@ -65,11 +71,6 @@ test.describe("Form Creation", () => {
             });
 
             await formPage.page.close();
-        })
-
-
-        await test.step('delete form' , async() => {
-            await formCreationPage.deleteForm();
         })
     });
 });
