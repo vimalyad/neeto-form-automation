@@ -5,8 +5,7 @@ import * as fs from "fs";
 
 test("Teardown",
   () => {
-    fs.unlink(STORAGE_STATE, error => {
-      if (!error) return;
-      console.log("Error: ", error);
-    });
+    if (fs.existsSync(STORAGE_STATE)) {
+      fs.unlinkSync(STORAGE_STATE);
+    }
   })

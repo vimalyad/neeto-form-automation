@@ -1,5 +1,17 @@
-export const CREATE_FORM_TEXTS = {
-    startFromScratch: "Start from scratch",
-    fullNameField: "Name",
-    phoneNumberField: "Phone number"
+export const FORM_ERRORS_TEXT = {
+    requiredEmail: 'Email is required',
+    invalidFirstName: 'First name is required',
+    invalidLastName: 'Last name is required',
+    invalidEmail: 'Email is invalid',
+    invalidPhoneNumber: 'Phone number is invalid',
+    usNumberError: 'US numbers cannot start with a one.'
+}
+
+export const FORM_COUNTRY_DETAILS = {
+    unitedStatesPhoneNumberPrefix: "+1",
+    unitedStates: "United States"
+}
+
+export const FORM_SUBMISSION_TEXT = {
+    thankYouText: 'Thank you.'
 }

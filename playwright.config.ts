@@ -1,7 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from 'dotenv';
 
 // file to store the session details
-export const STORAGE_STATE = "./auth/user.json";
+export const STORAGE_STATE = "./auth/user.json"
+
+dotenv.config({ path: "./e2e/config/.env" })
+
 
 export default defineConfig({
   testDir: "./e2e",
@@ -28,7 +32,7 @@ export default defineConfig({
     // by keeping it on-first-retry , Playwright will only record heavy-data if the test fails the first time and has to run again
     trace: "on-first-retry",
     // baseURL we will be using for our testing
-    baseURL: "https://neeto-form-web-playwright.neetodeployapp.com",
+    baseURL: process.env.BASE_URL!,
   },
 
   // mainly used to test different browsers
