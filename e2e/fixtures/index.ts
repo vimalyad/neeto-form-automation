@@ -1,12 +1,18 @@
 import { test as base, Page } from "@playwright/test";
+import FormPage from "@poms/form";
 
 interface ExtendedFixtures {
-    page: Page
+    formPage: FormPage
 }
 
+// Add baseURL to the destructured arguments
 export const test = base.extend<ExtendedFixtures>({
-    page: async ({ page }, use) => {
-        await test.step("Visiting Neeto form website ", () => page.goto("/"))
-        await use(page);
+    formPage: async ({ page }, use) => {
+        await use(new FormPage(page))
     },
-})
+
+    page: async ({ page }, use) => {
+        await page.goto("/");
+        await use(page)
+    }
+});

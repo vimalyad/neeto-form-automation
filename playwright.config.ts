@@ -28,7 +28,7 @@ export default defineConfig({
     // by keeping it on-first-retry , Playwright will only record heavy-data if the test fails the first time and has to run again
     trace: "on-first-retry",
     // baseURL we will be using for our testing
-    baseURL: "https://neeto-form-web-playwright.neetodeployapp.com/",
+    baseURL: "https://neeto-form-web-playwright.neetodeployapp.com",
   },
 
   // mainly used to test different browsers
