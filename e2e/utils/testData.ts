@@ -1,4 +1,4 @@
-import { de, faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 import { FormDetails, Name, SubmissionDetails } from "@poms/form";
 
 export function getMockData() {
@@ -35,5 +35,12 @@ export function transformToSubmissionDetails(mockUser: ReturnType<typeof getMock
         email: details.email,
         phoneNumber: details.phoneNumber,
         name: `${details.name.firstName} ${details.name.lastName}`
+    }
+}
+
+export function transformToName(firstName: string, lastName: string): Name {
+    return {
+        firstName: firstName,
+        lastName: lastName
     }
 }

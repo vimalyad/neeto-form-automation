@@ -13,5 +13,7 @@ export const CREATE_FORM_SELECTORS = {
     hideSwitchLabel: 'hide-question-toggle-label',
     nuiSwitchLabel: 'nui-switch',
     singleChoiceQuestionAddButton: 'add-single-choice-element',
-    multipleChoiceQuestionAddButton: 'add-multiple-choice-element'
+    multipleChoiceQuestionAddButton: 'add-multiple-choice-element',
+    randomizedErrorWarning: 'randomized-warning-error-text',
+    hiddenErrorWarning: 'hide-question-error-text'
 }

@@ -1,5 +1,5 @@
 import { expect, Page } from "@playwright/test";
-import { CREATE_FORM_SELECTORS, FORM_SELECTORS } from "@selectors";
+import { FORM_SELECTORS } from "@selectors";
 import { FORM_COUNTRY_DETAILS, FORM_ERRORS_TEXT, FORM_SUBMISSION_TEXT } from "@texts/form";
 
 export interface Name {
@@ -23,32 +23,34 @@ export default class FormPage {
     }
 
     verifyThankYouOnPage = async () => {
+        // verify thank you text on page
         await expect(this.page.getByRole('heading', { name: FORM_SUBMISSION_TEXT.thankYouText })).toBeVisible();
     }
 
     verifyMultiChoiceQuestionHidden = async () => {
-        const optionsContainer = this.page.getByTestId(FORM_SELECTORS.multipleChoiceOptionContainer);
-        await expect(optionsContainer).toBeHidden({ timeout: 10000 });
+        // verify multi-choice question hidden
+        await expect(this.page.getByTestId(FORM_SELECTORS.multipleChoiceOptionContainer)).toBeHidden({ timeout: 10000 });
     }
 
     verifyMultiChoiceQuestionVisible = async () => {
-        const optionsContainer = this.page.getByTestId(FORM_SELECTORS.multipleChoiceOptionContainer);
-        await expect(optionsContainer).toBeVisible({ timeout: 10000 });
+        // verify multi-choice question visible
+        await expect(this.page.getByTestId(FORM_SELECTORS.multipleChoiceOptionContainer)).toBeVisible({ timeout: 10000 });
     }
 
     verifySingleChoiceOptionsRandomized = async () => {
         const optionsContainer = this.page.getByTestId(FORM_SELECTORS.singleChoiceOptionContainer);
+        // get the container storing all options of single-choice-question
+
+        // playwright will wait upto 15 sec while it will be scanning dom every millisecond and as soon as it finds it , it will move to next
         await expect(optionsContainer).toBeVisible({ timeout: 15000 });
-        await expect(optionsContainer.locator('label').first()).toBeVisible({ timeout: 5000 });
-        const optionsLabels = await optionsContainer.locator('label').allTextContents();
-        const cleanOptions = optionsLabels.map(opt => opt.trim()).filter(opt => opt !== '');
-        if (cleanOptions.length < 2) return;
-        const sorted = [...cleanOptions].sort((a, b) => {
-            const numA = parseInt(a.match(/\d+/)?.[0] || '0');
-            const numB = parseInt(b.match(/\d+/)?.[0] || '0');
-            return numA - numB;
-        });
-        expect(cleanOptions, 'Options should be randomized but they appear in sorted order').not.toEqual(sorted);
+
+        // get all option's textContent
+        const options = await optionsContainer.locator('label').allTextContents();
+        for (let i = 0; i < options.length; i++) {
+            // if it is randomized then it will not follow i + 1 structure
+            if (options[i] !== `Option ${i + 1}`) return; 
+        }
+        expect(false, 'Options not randomized').toBe(true);
     }
 
     // errors assert methods
