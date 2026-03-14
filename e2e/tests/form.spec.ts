@@ -189,7 +189,7 @@ test.describe("Form Features", () => {
 
   // Medium level practice question
 
-  test.only("Access control the form with password protection", async ({
+  test("Access control the form with password protection", async ({
     formCreationPage,
     page,
     browser,
