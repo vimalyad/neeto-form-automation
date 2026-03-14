@@ -6,5 +6,12 @@ export const CREATE_FORM_SELECTORS = {
     formDeleteButton: 'form-delete-button',
     alertCheckboxButton: 'delete-archive-alert-archive-checkbox',
     alertDeleteButton: 'delete-archive-alert-delete-button',
-    submissionTab: 'submissions-tab'
+    submissionTab: 'submissions-tab',
+    addOptionButton: 'add-option-link',
+    elementsContainer: 'elements-container',
+    randomizeSwitchLabel: 'randomize-switch-label',
+    hideSwitchLabel: 'hide-question-toggle-label',
+    nuiSwitchLabel: 'nui-switch',
+    singleChoiceQuestionAddButton: 'add-single-choice-element',
+    multipleChoiceQuestionAddButton: 'add-multiple-choice-element'
 }

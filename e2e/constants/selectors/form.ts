@@ -12,4 +12,6 @@ export const FORM_SELECTORS = {
     phoneNumberPrefix: 'phone-number-prefix',
     selectCSS: '.neeto-form-react-select__indicator',
     countryCodeSearchInput: 'country-code-search-input',
+    singleChoiceOptionContainer: 'single-choice-options-container',
+    multipleChoiceOptionContainer: 'multiple-choice-options-container'
 }
