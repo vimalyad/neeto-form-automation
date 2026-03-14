@@ -1,31 +1,40 @@
 export const CREATE_FORM_SELECTORS = {
-    addFormButton: "add-form-button",
-    publishButton: "publish-button",
-    addFormElementButton: "add-element-button",
-    menuButton: 'neeto-molecules-menu-button',
-    formDeleteButton: 'form-delete-button',
-    alertCheckboxButton: 'delete-archive-alert-archive-checkbox',
-    alertDeleteButton: 'delete-archive-alert-delete-button',
-    addOptionButton: 'add-option-link',
-    elementsContainer: 'elements-container',
-    randomizeSwitchLabel: 'randomize-switch-label',
-    hideSwitchLabel: 'hide-question-toggle-label',
-    nuiSwitchLabel: 'nui-switch',
-    singleChoiceQuestionAddButton: 'add-single-choice-element',
-    multipleChoiceQuestionAddButton: 'add-multiple-choice-element',
-    randomizedErrorWarning: 'randomized-warning-error-text',
-    hiddenErrorWarning: 'hide-question-error-text'
-}
+  addFormButton: "add-form-button",
+  publishButton: "publish-button",
+  addFormElementButton: "add-element-button",
+  menuButton: "neeto-molecules-menu-button",
+  formDeleteButton: "form-delete-button",
+  alertCheckboxButton: "delete-archive-alert-archive-checkbox",
+  alertDeleteButton: "delete-archive-alert-delete-button",
+  addOptionButton: "add-option-link",
+  elementsContainer: "elements-container",
+  randomizeSwitchLabel: "randomize-switch-label",
+  hideSwitchLabel: "hide-question-toggle-label",
+  nuiSwitchLabel: "nui-switch",
+  singleChoiceQuestionAddButton: "add-single-choice-element",
+  multipleChoiceQuestionAddButton: "add-multiple-choice-element",
+  randomizedErrorWarning: "randomized-warning-error-text",
+  hiddenErrorWarning: "hide-question-error-text",
+};
 
 export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
-    submissionTab: 'submissions-tab',
-}
-
+  submissionTab: "submissions-tab",
+};
 
 export const CREATE_FORM_ANALYTICS_SELECTORS = {
-    insightCount: 'insights-count',
-    visitMetric: 'visits-metric',
-    startsMetric: 'starts-metric',
-    submissionsMetric: 'submissions-metric',
-    completionRateMetric: 'completion-rate-metric'
-}
+  analyticsTab: "analytics-tab",
+  insightCount: "insights-count",
+  visitMetric: "visits-metric",
+  startsMetric: "starts-metric",
+  submissionsMetric: "submissions-metric",
+  completionRateMetric: "completion-rate-metric",
+};
+
+export const CREATE_FORM_SETTINGS_SELECTORS = {
+  settingsTab: "settings-tab",
+  accessControlCard: "access-control-settings-link",
+  accessControlPasswordField: "access-control-password-protected-radio-input",
+  securePasswordInput: "password-input-field",
+  securePasswordSaveButton: "save-changes-button",
+  securePasswordError: "password-input-error",
+};
