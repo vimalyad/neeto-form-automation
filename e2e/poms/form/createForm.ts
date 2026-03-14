@@ -62,17 +62,17 @@ export default class FormCreationPage {
     }
 
     openFormPage = async (context: BrowserContext) => {
+        const previewButton = this.page.getByTestId(FORM_SELECTORS.publishPreviewButton);
+        // make sure preview button enabled
+        await expect(previewButton).toBeEnabled({timeout: 15000});
+        // publish preview button clicked here
+        await previewButton.click();
         // catch the promise which will be opening new page
         const pagePromise = context.waitForEvent('page');
-        // publish preview button clicked here
-        await this.page.getByTestId(FORM_SELECTORS.publishPreviewButton).click();
-
         // promise resolved and we will get the page
         const newPage = await pagePromise;
-
         // wait until the dom gets loaded
         await newPage.waitForLoadState('domcontentloaded');
-
         return new FormPage(newPage);
     }
 

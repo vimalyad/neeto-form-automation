@@ -39,16 +39,15 @@ test.describe("Form Creation", () => {
 
         await test.step("Valid credentials and successful submit", () => formPage.validDetailsAndVerify(transformToFormDetails(mockUser)));
 
-        await test.step('Verify Thank you and close form page', () => formPage.verifyThankYouOnPage())
+        await test.step('Verify Thank you and close form page', () => formPage.verifyThankYouOnPage());
 
-        await test.step('Verify submitted response', async () => {
-            await formCreationPage.verifySubmission(transformToSubmissionDetails(mockUser));
-            await formPage.page.close();
-        })
+        await test.step("Close form page" , () => formPage.page.close());
+
+        await test.step('Verify submitted response', () => formCreationPage.verifySubmission(transformToSubmissionDetails(mockUser)))
     });
 
 
-    test.only("Customize form's field elements", async ({ formCreationPage, page }) => {
+    test("Customize form's field elements", async ({ formCreationPage, page }) => {
 
         await test.step("Add single choice element with 6 additional options", () => formCreationPage.addSingleChoiceQuestionWithSixExtraOptions());
 

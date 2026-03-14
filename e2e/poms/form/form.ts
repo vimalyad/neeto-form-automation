@@ -24,7 +24,7 @@ export default class FormPage {
 
     verifyThankYouOnPage = async () => {
         // verify thank you text on page
-        await expect(this.page.getByRole('heading', { name: FORM_SUBMISSION_TEXT.thankYouText })).toBeVisible();
+        await expect(this.page.getByRole('heading', { name: FORM_SUBMISSION_TEXT.thankYouText })).toBeVisible({timeout: 15000});
     }
 
     verifyMultiChoiceQuestionHidden = async () => {
