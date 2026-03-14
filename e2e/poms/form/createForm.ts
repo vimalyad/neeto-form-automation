@@ -1,6 +1,6 @@
 import { BrowserContext, expect, Page } from "@playwright/test";
-import { CREATE_FORM_SELECTORS, FORM_SELECTORS } from "@selectors";
-import FormPage, { FormDetails } from "./form";
+import { CREATE_FORM_SELECTORS, CREATE_FORM_ANALYTICS_SELECTORS, FORM_SELECTORS, CREATE_FORM_SUBMISSIONS_SELECTORS } from "@selectors";
+import FormPage from "./form";
 import { CREATE_FORM_TEXTS } from "@texts/createForm";
 
 export interface SubmissionDetails {
@@ -64,7 +64,7 @@ export default class FormCreationPage {
     openFormPage = async (context: BrowserContext) => {
         const previewButton = this.page.getByTestId(FORM_SELECTORS.publishPreviewButton);
         // make sure preview button enabled
-        await expect(previewButton).toBeEnabled({timeout: 15000});
+        await expect(previewButton).toBeEnabled({ timeout: 15000 });
         // publish preview button clicked here
         await previewButton.click();
         // catch the promise which will be opening new page
@@ -81,7 +81,7 @@ export default class FormCreationPage {
         email,
         phoneNumber
     }: SubmissionDetails) => {
-        await this.page.getByTestId(CREATE_FORM_SELECTORS.submissionTab).click();
+        await this.page.getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.submissionTab).click();
 
         // as it is sorted by time so our submission will be on top
         const submissionRow = this.page.getByRole('row').filter({ hasText: email }).first();
@@ -101,7 +101,52 @@ export default class FormCreationPage {
         await this.page.getByTestId(CREATE_FORM_SELECTORS.alertDeleteButton).click();
     }
 
+    verifyInitialFormInsightToBeZero = async () => {
+        this.verifyStartCount(0);
+        this.verifyStartCount(0);
+        this.verifySubmissionCount(0);
+        this.verifyCompletionPercentage(0);
+    }
+
+    openAnalyticsTab = async () => {
+        await this.page.getByTestId('analytics-tab').click();
+    }
+
+    // here we are waiting for the UI to get updated with real details by providing it time
+
+    verifyVisitCount = async (count: number) => {
+        await expect(this.getVisitLocator()).toHaveText(count.toString(), { timeout: 15000 });
+    }
+
+    verifyStartCount = async (count: number) => {
+        await expect(this.getStartsLocator()).toHaveText(count.toString(), { timeout: 15000 });
+    }
+
+    verifySubmissionCount = async (count: number) => {
+        await expect(this.getSubmissionsLocator()).toHaveText(count.toString(), { timeout: 15000 });
+    }
+
+    verifyCompletionPercentage = async (percentage: number) => {
+        await expect(this.getCompletionLocator()).toHaveText(`${percentage}%`, { timeout: 15000 });
+    }
+
     private clickAddElementButton = async () => {
         await this.page.getByTestId(CREATE_FORM_SELECTORS.addFormElementButton).click();
+    }
+
+    private getVisitLocator = () => {
+        return this.page.getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.visitMetric).getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+    }
+
+    private getStartsLocator = () => {
+        return this.page.getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.startsMetric).getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+    }
+
+    private getSubmissionsLocator = () => {
+        return this.page.getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.submissionsMetric).getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+    }
+
+    private getCompletionLocator = () => {
+        return this.page.getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.completionRateMetric).getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
     }
 }

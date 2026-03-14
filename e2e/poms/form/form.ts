@@ -24,7 +24,7 @@ export default class FormPage {
 
     verifyThankYouOnPage = async () => {
         // verify thank you text on page
-        await expect(this.page.getByRole('heading', { name: FORM_SUBMISSION_TEXT.thankYouText })).toBeVisible({timeout: 15000});
+        await expect(this.page.getByRole('heading', { name: FORM_SUBMISSION_TEXT.thankYouText })).toBeVisible({ timeout: 15000 });
     }
 
     verifyMultiChoiceQuestionHidden = async () => {
@@ -48,7 +48,7 @@ export default class FormPage {
         const options = await optionsContainer.locator('label').allTextContents();
         for (let i = 0; i < options.length; i++) {
             // if it is randomized then it will not follow i + 1 structure
-            if (options[i] !== `Option ${i + 1}`) return; 
+            if (options[i] !== `Option ${i + 1}`) return;
         }
         expect(false, 'Options not randomized').toBe(true);
     }
@@ -126,16 +126,20 @@ export default class FormPage {
         await this.noNameError();
     }
 
+    fillEmail = async (email: string) => {
+        await this.page.getByTestId(FORM_SELECTORS.emailField).fill(email);
+    }
+
+    submitForm = async () => {
+        await this.page.getByTestId(FORM_SELECTORS.submitButton).click();
+    }
+
 
     // private methods
 
     private fillName = async ({ firstName, lastName }: Name) => {
         await this.page.getByTestId(FORM_SELECTORS.firstNameField).fill(firstName);
         await this.page.getByTestId(FORM_SELECTORS.lastNameField).fill(lastName);
-    }
-
-    private fillEmail = async (email: string) => {
-        await this.page.getByTestId(FORM_SELECTORS.emailField).fill(email);
     }
 
     private fillPhoneNumber = async (phoneNumber: string) => {
@@ -151,7 +155,7 @@ export default class FormPage {
         await this.fillEmail(email);
         await this.fillName(name);
         await this.fillPhoneNumber(phoneNumber);
-        await this.page.getByTestId(FORM_SELECTORS.submitButton).click();
+        await this.submitForm();
     }
 
     private changeCountryIfNotAlready = async () => {

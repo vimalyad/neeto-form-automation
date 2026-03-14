@@ -6,7 +6,6 @@ export const CREATE_FORM_SELECTORS = {
     formDeleteButton: 'form-delete-button',
     alertCheckboxButton: 'delete-archive-alert-archive-checkbox',
     alertDeleteButton: 'delete-archive-alert-delete-button',
-    submissionTab: 'submissions-tab',
     addOptionButton: 'add-option-link',
     elementsContainer: 'elements-container',
     randomizeSwitchLabel: 'randomize-switch-label',
@@ -16,4 +15,17 @@ export const CREATE_FORM_SELECTORS = {
     multipleChoiceQuestionAddButton: 'add-multiple-choice-element',
     randomizedErrorWarning: 'randomized-warning-error-text',
     hiddenErrorWarning: 'hide-question-error-text'
+}
+
+export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
+    submissionTab: 'submissions-tab',
+}
+
+
+export const CREATE_FORM_ANALYTICS_SELECTORS = {
+    insightCount: 'insights-count',
+    visitMetric: 'visits-metric',
+    startsMetric: 'starts-metric',
+    submissionsMetric: 'submissions-metric',
+    completionRateMetric: 'completion-rate-metric'
 }
