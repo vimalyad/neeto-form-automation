@@ -15,6 +15,7 @@ export const CREATE_FORM_SELECTORS = {
   multipleChoiceQuestionAddButton: "add-multiple-choice-element",
   randomizedErrorWarning: "randomized-warning-error-text",
   hiddenErrorWarning: "hide-question-error-text",
+  saveChangesButton: "save-changes-button",
 };
 
 export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
@@ -35,6 +36,8 @@ export const CREATE_FORM_SETTINGS_SELECTORS = {
   accessControlCard: "access-control-settings-link",
   accessControlPasswordField: "access-control-password-protected-radio-input",
   securePasswordInput: "password-input-field",
-  securePasswordSaveButton: "save-changes-button",
   securePasswordError: "password-input-error",
+  noTrackItemCheck: 'no-track-radio-item',
+  cookieTrackItemCheck: 'cookie-track-radio-item',
+  uniqueSubmissionCard: 'unique-submission-settings-link'
 };

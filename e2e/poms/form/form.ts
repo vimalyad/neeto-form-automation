@@ -76,7 +76,7 @@ export default class FormPage {
       // if it is randomized then it will not follow i + 1 structure
       if (options[i] !== `Option ${i + 1}`) return;
     }
-    expect(false, "Options not randomized").toBe(true);
+    expect(false, FORM_ERRORS_TEXT.optionsNotRandomized).toBe(true);
   };
 
   // errors assert methods
@@ -223,6 +223,35 @@ export default class FormPage {
     await this.verifyThankYouOnPage();
   };
 
+  fillFormWithEmailAndVerify = async (email: string) => {
+    await this.fillEmail(email);
+    await this.submitForm();
+    await this.verifyThankYouOnPage();
+  };
+
+  verifyDuplicateSubmissionNotAllowed = async () => {
+    await expect(
+      this.page.getByRole("heading", {
+        name: FORM_SUBMISSION_TEXT.submissionNotAllowed,
+      }),
+    ).toBeVisible();
+
+    await expect(
+      this.page.getByText(FORM_SUBMISSION_TEXT.alreadySubmittedText),
+    ).toBeVisible();
+  };
+
+  private fillAndSubmitForm = async ({
+    email,
+    name,
+    phoneNumber,
+  }: FormDetails) => {
+    await this.fillEmail(email);
+    await this.fillName(name);
+    await this.fillPhoneNumber(phoneNumber);
+    await this.submitForm();
+  };
+
   // private methods
 
   private fillName = async ({ firstName, lastName }: Name) => {
@@ -235,17 +264,6 @@ export default class FormPage {
     await this.page
       .getByTestId(FORM_SELECTORS.phoneNumberField)
       .fill(phoneNumber);
-  };
-
-  private fillAndSubmitForm = async ({
-    email,
-    name,
-    phoneNumber,
-  }: FormDetails) => {
-    await this.fillEmail(email);
-    await this.fillName(name);
-    await this.fillPhoneNumber(phoneNumber);
-    await this.submitForm();
   };
 
   private changeCountryIfNotAlready = async () => {

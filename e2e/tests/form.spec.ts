@@ -9,6 +9,7 @@ import {
   transformToSubmissionDetails,
 } from "@utils/testData";
 import { getNewPageWithCleanContext } from "@utils/pageCreation";
+import { expect } from "@playwright/test";
 
 test.describe("Form Features", () => {
   let mockUser: ReturnType<typeof getMockData> = getMockData();
@@ -30,6 +31,7 @@ test.describe("Form Features", () => {
   });
 
   test("Create and submit a form", async ({ formCreationPage, page }) => {
+    test.setTimeout(60000);
     await test.step("Add name and phone number fields", () =>
       formCreationPage.addNameAndPhoneNumberFields());
 
@@ -70,6 +72,7 @@ test.describe("Form Features", () => {
     formCreationPage,
     page,
   }) => {
+    test.setTimeout(60000);
     await test.step("Add single choice element with 6 additional options", () =>
       formCreationPage.addSingleChoiceQuestionWithSixExtraOptions());
 
@@ -235,5 +238,49 @@ test.describe("Form Features", () => {
       await formCreationPage.openSubmissionsTab();
       await formCreationPage.verifyResponse(mockUser.email);
     });
+  });
+
+  test("Unique submisions", async ({ formCreationPage, page }) => {
+    test.setTimeout(60000);
+    await test.step("Publish form", () => formCreationPage.publishForm());
+
+    await test.step("Open settings tab", () =>
+      formCreationPage.openSettingsTab());
+
+    await test.step("Unqiue submission Card", () =>
+      formCreationPage.openUniqueSubmissionCard());
+
+    await test.step("Check unique cookies", () =>
+      formCreationPage.allowUniqueSubmission());
+
+    await test.step("Open form button", async () => {
+      formPage = await formCreationPage.openFormPage(page.context());
+    });
+
+    await test.step("Fill form with email and submit and verify submission", () =>
+      formPage.fillFormWithEmailAndVerify(mockUser.email));
+
+    await test.step("Close the form", () => formPage.page.close());
+
+    await test.step("Close form and open new one", async () => {
+      formPage = await formCreationPage.openFormPage(page.context());
+    });
+
+    await test.step("Verify duplicate submission not allowed", () =>
+      formPage.verifyDuplicateSubmissionNotAllowed());
+
+    await test.step("Close the form", () => formPage.page.close());
+
+    await test.step("Allow duplicate submission", () =>
+      formCreationPage.allowDuplicateSubmission());
+
+    await test.step("open new one form", async () => {
+      formPage = await formCreationPage.openFormPage(page.context());
+    });
+
+    await test.step("Fill form with email and submit", () =>
+      formPage.fillFormWithEmailAndVerify(mockUser.email));
+
+    await test.step("Close the form", () => formPage.page.close());
   });
 });

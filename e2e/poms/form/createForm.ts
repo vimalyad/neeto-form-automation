@@ -209,19 +209,19 @@ export default class FormCreationPage {
 
   verifySecurePasswordField = async () => {
     await this.setSecurePassword();
-    await this.saveSecurePassword();
+    await this.saveFormChangesButton();
     await this.gotSecurePasswordError();
     await this.setSecurePassword("123");
-    await this.saveSecurePassword();
+    await this.saveFormChangesButton();
     await this.gotSecurePasswordError();
     await this.setSecurePassword("abc");
-    await this.saveSecurePassword();
+    await this.saveFormChangesButton();
     await this.gotSecurePasswordError();
   };
 
   setSecurePasswordAndSave = async (password: string) => {
     await this.setSecurePassword(password);
-    await this.saveSecurePassword();
+    await this.saveFormChangesButton();
   };
 
   setSecurePassword = async (password = "") => {
@@ -230,9 +230,9 @@ export default class FormCreationPage {
       .fill(password);
   };
 
-  saveSecurePassword = async () => {
+  saveFormChangesButton = async () => {
     await this.page
-      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.securePasswordSaveButton)
+      .getByTestId(CREATE_FORM_SELECTORS.saveChangesButton)
       .click();
   };
 
@@ -258,6 +258,26 @@ export default class FormCreationPage {
 
   verifyResponse = async (email: string) => {
     await expect(this.page.getByRole("link", { name: email })).toBeVisible();
+  };
+
+  allowDuplicateSubmission = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.noTrackItemCheck)
+      .check();
+    await this.saveFormChangesButton();
+  };
+
+  allowUniqueSubmission = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.cookieTrackItemCheck)
+      .check();
+    await this.saveFormChangesButton();
+  };
+
+  openUniqueSubmissionCard = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.uniqueSubmissionCard)
+      .click();
   };
 
   private clickAddElementButton = async () => {
