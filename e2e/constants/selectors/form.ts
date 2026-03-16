@@ -15,7 +15,11 @@ export const FORM_SELECTORS = {
   singleChoiceOptionContainer: "single-choice-options-container",
   multipleChoiceOptionContainer: "multiple-choice-options-container",
   multipleChoiceGroup: 'multiple-choice-group',
-  singleChoiceOption: 'single-choice-option'
+  singleChoiceOption: 'single-choice-option',
+  starRatingGroup: 'star-rating-group',
+  opinionScaleInput: 'opinion-scale-input',
+  matrixColumnLabel: 'matrix-columns-label',
+  matrixTable: 'form-matrix-table'
 };
 
 export const FORM_ACCESS_CARD_SELECTORS = {

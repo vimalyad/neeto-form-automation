@@ -442,10 +442,122 @@ export default class FormCreationPage {
       .click();
   };
 
-  private clickAddElementButton = async () => {
+  getEmailIdentifier = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.emailPreviewGroup)
+      .click();
+    await this.page
+      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
+      .click();
+    return await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
+      .inputValue();
+  };
+
+  addStarRatingElement = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.addStarRatingElement)
+      .click();
+  };
+
+  fillQuestionInStarElement = async (starRatingQuestion: string) => {
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.contextTextField).click();
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.contextTextField)
+      .fill(starRatingQuestion);
+  };
+
+  clickAddElementButton = async () => {
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.addFormElementButton)
       .click();
+  };
+
+  getStarRatingIdentifier = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
+      .nth(1)
+      .click();
+    await this.page
+      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
+      .click();
+    return await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
+      .inputValue();
+  };
+
+  addOpinionScaleElement = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.addOpinionScaleElement)
+      .click();
+  };
+
+  fillQuestionInOpinionScale = async (opinionScaleQuestion: string) => {
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.contextTextField).click();
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.contextTextField)
+      .fill(opinionScaleQuestion);
+  };
+
+  getOpinionScaleIdentifier = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
+      .nth(2)
+      .click();
+    await this.page
+      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
+      .click();
+    return await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
+      .inputValue();
+  };
+
+  addMatrixElement = async () => {
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.addMatrixElement).click();
+  };
+
+  fillQuestionInMatrix = async (matrixText: string) => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.contextTextField)
+      .fill(matrixText);
+  };
+
+  getMatrixIdentifier = async () => {
+    await this.page
+      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
+      .click();
+    return await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
+      .inputValue();
+  };
+
+  fillValuesInRowAndColumnInMatrix = async ({
+    rows = [],
+    cols = [],
+  }: {
+    rows: string[];
+    cols: string[];
+  }) => {
+    for (let i = 0; i < rows.length; i++) {
+      await this.page
+        .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
+        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
+        .click();
+      await this.page
+        .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
+        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
+        .fill(rows[i]);
+    }
+    for (let i = 0; i < cols.length; i++) {
+      await this.page
+        .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
+        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
+        .click();
+      await this.page
+        .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
+        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
+        .fill(cols[i]);
+    }
   };
 
   private getVisitLocator = () => {

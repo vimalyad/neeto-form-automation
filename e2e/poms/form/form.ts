@@ -303,6 +303,75 @@ export default class FormPage {
     ).toBeVisible();
   };
 
+  checkEmailValueMatch = async (email: string) => {
+    await expect(this.page.getByTestId(FORM_SELECTORS.emailField)).toHaveValue(
+      email,
+    );
+  };
+
+  checkStarValueMatch = async (starRating: string) => {
+    await expect(
+      this.page
+        .getByTestId(FORM_SELECTORS.starRatingGroup)
+        .locator(`input[value="${starRating}"]`),
+    ).toBeChecked();
+  };
+
+  checkOpinionScaleMatch = async (opinionScaleRating: string) => {
+    await expect(
+      this.page.getByTestId(
+        `${FORM_SELECTORS.opinionScaleInput}-${opinionScaleRating}`,
+      ),
+    ).toBeChecked();
+  };
+
+  checkMatrixValuesMatch = async ({
+    rows = [],
+    cols = [],
+  }: {
+    rows: string[];
+    cols: string[];
+  }) => {
+    for (let i = 0; i < rows.length; i++) {
+      await this.verifyMatrixSelection(rows[i], cols[i]);
+    }
+  };
+
+  private verifyMatrixSelection = async (row: string, col: string) => {
+    // get the table
+    const headers = this.page.getByTestId(FORM_SELECTORS.matrixColumnLabel);
+
+    // get the total columns
+    const headerCount = await headers.count();
+    let colIndex = -1;
+
+    // iterate over all columns
+    for (let i = 0; i < headerCount; i++) {
+      // get the column's text content
+      const headerText = await headers.nth(i).textContent();
+      // if column's text matched then get the colIndex
+      if (headerText?.trim() === col) {
+        colIndex = i;
+        break;
+      }
+    }
+
+    // Make sure we found a valid index
+    expect(colIndex).toBeGreaterThan(-1);
+
+    // 3. Get the row
+    const targetRow = this.page
+      .getByTestId(FORM_SELECTORS.matrixTable)
+      .locator("tr")
+      .filter({ hasText: row });
+
+    // 4. Target the specific radio button by column index and assert it's checked
+    await expect(
+      targetRow.locator("input[type='radio']").nth(colIndex),
+    ).toBeChecked();
+  };
+  // private methods
+
   private fillAndSubmitForm = async ({
     email,
     name,
@@ -313,8 +382,6 @@ export default class FormPage {
     await this.fillPhoneNumber(phoneNumber);
     await this.submitForm();
   };
-
-  // private methods
 
   private fillName = async ({ firstName, lastName }: Name) => {
     await this.page.getByTestId(FORM_SELECTORS.firstNameField).fill(firstName);

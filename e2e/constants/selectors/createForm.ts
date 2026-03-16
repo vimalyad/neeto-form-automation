@@ -27,6 +27,14 @@ export const CREATE_FORM_SELECTORS = {
   formGroupQuestion: "form-group-question",
   optionInput: "option-input",
   deleteOptionButton: "delete-option-button",
+  emailPreviewGroup: "email-preview-group",
+  fieldCodeTextField: "field-code-text-field",
+  contextTextField: "content-text-field",
+  matrixRowContainer: "matrix-row-container",
+  matrixColContainer: "matrix-column-container",
+  addMatrixElement: "add-matrix-element",
+  addOpinionScaleElement: "add-opinion-scale-element",
+  addStarRatingElement: "add-star-rating-element",
 };
 
 export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
