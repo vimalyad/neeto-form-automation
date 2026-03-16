@@ -7,7 +7,6 @@ interface ExtendedFixtures {
     dashboardPage: DashboardPage
 }
 
-// Add baseURL to the destructured arguments
 export const test = base.extend<ExtendedFixtures>({
 
     formCreationPage: async ({ page }, use) => {
