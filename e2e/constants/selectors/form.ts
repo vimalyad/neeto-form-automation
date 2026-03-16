@@ -14,6 +14,8 @@ export const FORM_SELECTORS = {
   countryCodeSearchInput: "country-code-search-input",
   singleChoiceOptionContainer: "single-choice-options-container",
   multipleChoiceOptionContainer: "multiple-choice-options-container",
+  multipleChoiceGroup: 'multiple-choice-group',
+  singleChoiceOption: 'single-choice-option'
 };
 
 export const FORM_ACCESS_CARD_SELECTORS = {

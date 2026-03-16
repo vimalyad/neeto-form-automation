@@ -1,11 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // file to store the session details
-export const STORAGE_STATE = "./auth/user.json"
+export const STORAGE_STATE = "./auth/user.json";
 
-dotenv.config({ path: "./e2e/config/.env" })
-
+dotenv.config({ path: "./e2e/config/.env" });
 
 export default defineConfig({
   testDir: "./e2e",
@@ -42,14 +41,14 @@ export default defineConfig({
       // this phase is for logging of the user and store the cookies into storage file
       name: "login",
       use: {
-        ...devices["Desktop Chrome"]
+        ...devices["Desktop Chrome"],
       },
       testMatch: "**/login.setup.ts",
     },
     {
       name: "teardown",
       use: {
-        ...devices["Desktop Chrome"]
+        ...devices["Desktop Chrome"],
       },
       testMatch: "**/global.teardown.ts",
     },
@@ -66,5 +65,5 @@ export default defineConfig({
       teardown: "teardown",
       testMatch: "**/*.spec.ts",
     },
-  ]
-})
+  ],
+});

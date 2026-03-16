@@ -1,3 +1,7 @@
+const COMMON = {
+  selectValueContainer: '[data-testid="nui-select-value-container"]',
+};
+
 export const CREATE_FORM_SELECTORS = {
   addFormButton: "add-form-button",
   publishButton: "publish-button",
@@ -16,6 +20,13 @@ export const CREATE_FORM_SELECTORS = {
   randomizedErrorWarning: "randomized-warning-error-text",
   hiddenErrorWarning: "hide-question-error-text",
   saveChangesButton: "save-changes-button",
+  emailDetailsDropdown: "email-more-dropdown",
+  deleteEmailButton: "delete-element-button",
+  addEmailButton: "add-email-element",
+  loadingSpinner: '[data-testid="neeto-ui-spinner"]',
+  formGroupQuestion: "form-group-question",
+  optionInput: "option-input",
+  deleteOptionButton: "delete-option-button",
 };
 
 export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
@@ -37,7 +48,21 @@ export const CREATE_FORM_SETTINGS_SELECTORS = {
   accessControlPasswordField: "access-control-password-protected-radio-input",
   securePasswordInput: "password-input-field",
   securePasswordError: "password-input-error",
-  noTrackItemCheck: 'no-track-radio-item',
-  cookieTrackItemCheck: 'cookie-track-radio-item',
-  uniqueSubmissionCard: 'unique-submission-settings-link'
+  noTrackItemCheck: "no-track-radio-item",
+  cookieTrackItemCheck: "cookie-track-radio-item",
+  uniqueSubmissionCard: "unique-submission-settings-link",
+  conditionalLogicCard: "conditional-logic-settings-link",
+  addNewCondition: "no-data-primary-button",
+  selectValueContainerField: `${COMMON.selectValueContainer}[name="field"]`,
+  typeAQuestionSelectValue: "type-a-question-select-option",
+  selectValueContainerVerb: `${COMMON.selectValueContainer}[name="verb"]`,
+  isEqualToOption: "is-equal-to-select-option",
+  selectValueContainerValue: `${COMMON.selectValueContainer}[name="value"]`,
+  optionOne: "option-1-select-option",
+  selectValueContainerActionType: `${COMMON.selectValueContainer}[name="actionType"]`,
+  showAction: "show-select-option",
+  selectValueContainerFields: `${COMMON.selectValueContainer}[name="fields"]`,
+  emailOption: "email-select-option",
+  conditionalLogicDropdown: "conditional-logic-dropdown",
+  conditionalLogicDisableButton: "conditions-Disable-button",
 };

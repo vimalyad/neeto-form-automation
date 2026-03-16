@@ -241,6 +241,68 @@ export default class FormPage {
     ).toBeVisible();
   };
 
+  verifyEmailDependencyOnOptionOneOfSingleChoice = async () => {
+    // question to be visible
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.multipleChoiceGroup),
+    ).toBeVisible({
+      timeout: 15000,
+    });
+    // email should not be part of DOM
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.emailGroup),
+    ).not.toBeAttached();
+    // select option 2
+    await this.page
+      .getByTestId(FORM_SELECTORS.singleChoiceOption)
+      .nth(1)
+      .click();
+    // email should not be part of DOM
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.emailGroup),
+    ).not.toBeAttached();
+    // select option 2
+    await this.page
+      .getByTestId(FORM_SELECTORS.singleChoiceOption)
+      .nth(0)
+      .click();
+    // email should be part of DOM
+    await expect(this.page.getByTestId(FORM_SELECTORS.emailGroup)).toBeVisible({
+      timeout: 10000,
+    });
+  };
+
+  verifyEmailHasNoDependency = async () => {
+    // question to be visible
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.multipleChoiceGroup),
+    ).toBeVisible({
+      timeout: 15000,
+    });
+    // email should be visible
+    await expect(this.page.getByTestId(FORM_SELECTORS.emailGroup)).toBeVisible({
+      timeout: 10000,
+    });
+    // select option 2
+    await this.page
+      .getByTestId(FORM_SELECTORS.singleChoiceOption)
+      .nth(1)
+      .click();
+    // email should be visible
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.emailGroup),
+    ).toBeVisible();
+    // select option 1
+    await this.page
+      .getByTestId(FORM_SELECTORS.singleChoiceOption)
+      .nth(0)
+      .click();
+    // email should be visible
+    await expect(
+      this.page.getByTestId(FORM_SELECTORS.emailGroup),
+    ).toBeVisible();
+  };
+
   private fillAndSubmitForm = async ({
     email,
     name,

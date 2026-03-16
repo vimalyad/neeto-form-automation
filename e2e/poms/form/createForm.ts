@@ -280,6 +280,168 @@ export default class FormCreationPage {
       .click();
   };
 
+  deleteEmailElement = async () => {
+    // open dropdown
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.emailDetailsDropdown)
+      .click();
+    // delete email element
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.deleteEmailButton)
+      .click();
+  };
+
+  addEmailElement = async () => {
+    // add Email element
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.addEmailButton).click();
+  };
+
+  addSingleChoiceElementWithOnlyTwoOptions = async () => {
+    // click add element button
+    await this.clickAddElementButton();
+    // add single choice element
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.singleChoiceQuestionAddButton)
+      .click();
+    // make sure the loading spinner is invisible
+    await this.page.waitForSelector(CREATE_FORM_SELECTORS.loadingSpinner, {
+      state: "hidden",
+      timeout: 15000,
+    });
+    // add pointer to first question
+    const questionBlock = this.page
+      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
+      .nth(0);
+    // question should be visible
+    await questionBlock.waitFor({ state: "visible" });
+    await questionBlock.scrollIntoViewIfNeeded();
+    // click on question to open settings page
+    await questionBlock.click();
+    // check add option button is now visible to make sure settings page loaded properly
+    await expect(
+      this.page.getByTestId(CREATE_FORM_SELECTORS.addOptionButton),
+    ).toBeVisible({
+      timeout: 15000,
+    });
+    // before clicking option 4 check it is visible
+    await expect(
+      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`),
+    ).toBeVisible({
+      timeout: 10000,
+    });
+    await this.page
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`)
+      .click();
+    await expect(
+      this.page.getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-3`),
+    ).toBeVisible();
+    await this.page
+      .getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-3`)
+      .click();
+    // verify option deleted
+    await expect(
+      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`),
+    ).toBeHidden();
+
+    // option 3 is visible
+    await this.page
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-2`)
+      .click();
+    await expect(
+      this.page.getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-2`),
+    ).toBeVisible();
+    await this.page
+      .getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-2`)
+      .click();
+    // verify option deleted
+    await expect(
+      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-2`),
+    ).toBeHidden();
+  };
+
+  openConditionalLogicCard = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.conditionalLogicCard)
+      .click();
+  };
+
+  addConditionalLogicOfEmailDependencyOnOptionOne = async () => {
+    // click on Add new condition button
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.addNewCondition)
+      .click();
+
+    // make sure input field is visible
+    await expect(
+      this.page.locator(
+        CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerField,
+      ),
+    ).toBeVisible({ timeout: 15000 });
+
+    // open input field for dependency from
+    await this.page
+      .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerField)
+      .click();
+    // choose single choice question
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.typeAQuestionSelectValue)
+      .click();
+
+    // open input field for verb
+    await this.page
+      .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerVerb)
+      .click();
+    // select the value to be equal to
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.isEqualToOption)
+      .click();
+
+    // open input field for value dependency
+    await this.page
+      .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerValue)
+      .click();
+    // choose option 1 for dependency
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.optionOne)
+      .click();
+
+    // open action input field
+    await this.page
+      .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerActionType)
+      .click();
+    // select action to show
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.showAction)
+      .click();
+
+    // open field for what to show
+    await this.page
+      .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerFields)
+      .click();
+    // select Email to be shown
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.emailOption)
+      .click();
+
+    // save the conditional logic
+    await this.saveFormChangesButton();
+    // verify conditional logic to be Hidden now
+    await expect(
+      this.page.getByTestId(CREATE_FORM_SELECTORS.saveChangesButton),
+    ).toBeHidden();
+  };
+
+  removeEmailDependency = async () => {
+    // open conditional logic dropdown
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.conditionalLogicDropdown)
+      .click();
+    // disable conditional logic
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.conditionalLogicDisableButton)
+      .click();
+  };
+
   private clickAddElementButton = async () => {
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.addFormElementButton)
