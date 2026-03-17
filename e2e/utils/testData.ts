@@ -49,6 +49,13 @@ export function transformToName(firstName: string, lastName: string): Name {
   };
 }
 
+export function transformToFullName(
+  firstName: string,
+  lastName: string,
+): string {
+  return `${firstName} ${lastName}`;
+}
+
 export function generatePassword() {
   return faker.string.fromCharacters("abcdefghijklmnopqrstuvwxyz", 6);
 }

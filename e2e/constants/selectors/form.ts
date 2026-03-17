@@ -14,12 +14,15 @@ export const FORM_SELECTORS = {
   countryCodeSearchInput: "country-code-search-input",
   singleChoiceOptionContainer: "single-choice-options-container",
   multipleChoiceOptionContainer: "multiple-choice-options-container",
-  multipleChoiceGroup: 'multiple-choice-group',
-  singleChoiceOption: 'single-choice-option',
-  starRatingGroup: 'star-rating-group',
-  opinionScaleInput: 'opinion-scale-input',
-  matrixColumnLabel: 'matrix-columns-label',
-  matrixTable: 'form-matrix-table'
+  multipleChoiceGroup: "multiple-choice-group",
+  singleChoiceOption: "single-choice-option",
+  starRatingGroup: "star-rating-group",
+  opinionScaleInput: "opinion-scale-input",
+  matrixColumnLabel: "matrix-columns-label",
+  matrixTable: "form-matrix-table",
+  matrixRadioLabel: "matrix-radio-label",
+  opinionScaleItem: 'opinion-scale-item',
+  ratingIcon: 'rating-icon'
 };
 
 export const FORM_ACCESS_CARD_SELECTORS = {

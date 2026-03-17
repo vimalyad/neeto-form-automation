@@ -1,5 +1,5 @@
 import { test } from "@fixtures";
-import FormPage from "../poms/form/form";
+import FormPage from "@poms/form/form";
 import { getMockData } from "@utils/testData";
 
 test.describe("Form Features", () => {
@@ -37,8 +37,11 @@ test.describe("Form Features", () => {
       formPage = await formCreationPage.openFormPage(page.context());
     });
 
-    await test.step("Fill form with email and submit and verify submission", () =>
-      formPage.fillFormWithEmailAndVerify(mockUser.email));
+    await test.step("Fill form with email and submit and verify submission", async () => {
+      await formPage.fillEmail(mockUser.email);
+      await formPage.submitForm();
+      await formPage.verifyThankYouOnPage();
+    });
 
     await test.step("Close the form", () => formPage.page.close());
 
@@ -46,8 +49,10 @@ test.describe("Form Features", () => {
       formPage = await formCreationPage.openFormPage(page.context());
     });
 
-    await test.step("Verify duplicate submission not allowed", () =>
-      formPage.verifyDuplicateSubmissionNotAllowed());
+    await test.step("Verify duplicate submission not allowed", async () => {
+      await formPage.submissionNotAllowedTextVisible();
+      await formPage.alreadySubmittedTextVisible();
+    });
 
     await test.step("Close the form", () => formPage.page.close());
 
@@ -58,8 +63,11 @@ test.describe("Form Features", () => {
       formPage = await formCreationPage.openFormPage(page.context());
     });
 
-    await test.step("Fill form with email and submit", () =>
-      formPage.fillFormWithEmailAndVerify(mockUser.email));
+    await test.step("Fill form with email and submit", async () => {
+      await formPage.fillEmail(mockUser.email);
+      await formPage.submitForm();
+      await formPage.verifyThankYouOnPage();
+    });
 
     await test.step("Close the form", () => formPage.page.close());
   });

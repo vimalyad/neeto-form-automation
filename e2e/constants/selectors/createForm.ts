@@ -39,6 +39,11 @@ export const CREATE_FORM_SELECTORS = {
 
 export const CREATE_FORM_SUBMISSIONS_SELECTORS = {
   submissionTab: "submissions-tab",
+  submittedResponse: 'submitted-response',
+  dropdownElement: 'nui-dropdown-icon',
+  downloadAsPdfCheckbox: 'download-as-pdf-radio-item',
+  downloadButton: 'action-dropdown-btn',
+  paneCloseButton: 'pane-close-button'
 };
 
 export const CREATE_FORM_ANALYTICS_SELECTORS = {

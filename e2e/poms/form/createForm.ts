@@ -6,14 +6,8 @@ import {
   CREATE_FORM_SUBMISSIONS_SELECTORS,
   CREATE_FORM_SETTINGS_SELECTORS,
 } from "@selectors";
-import FormPage from "./form";
 import { CREATE_FORM_TEXTS } from "@texts/createForm";
-
-export interface SubmissionDetails {
-  name: string;
-  email: string;
-  phoneNumber: string;
-}
+import FormPage from "./form";
 
 export default class FormCreationPage {
   constructor(public page: Page) {}
@@ -24,74 +18,36 @@ export default class FormCreationPage {
       .click();
   };
 
-  addNameAndPhoneNumberFields = async () => {
-    // click add element button
-    this.clickAddElementButton();
-    //
+  clickAddElementButton = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.addFormElementButton)
+      .click();
+  };
+
+  addNameElement = async () => {
     await this.page
       .getByRole("button", { name: CREATE_FORM_TEXTS.fullNameField })
       .click();
+  };
+
+  addPhoneNumberElement = async () => {
     await this.page
       .getByRole("button", { name: CREATE_FORM_TEXTS.phoneNumberField })
       .click();
   };
 
-  addSingleChoiceQuestionWithSixExtraOptions = async () => {
-    this.clickAddElementButton();
+  addSingleChoiceElement = async () => {
+    // add single choice element
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.singleChoiceQuestionAddButton)
       .click();
-    await expect(
-      this.page.getByTestId(CREATE_FORM_SELECTORS.addOptionButton),
-    ).toBeVisible({ timeout: 10000 });
-    for (let i = 0; i < 6; i++)
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.addOptionButton)
-        .click();
   };
 
-  addMultiChoiceQuestionWithSixExtraOptions = async () => {
+  addMultiChoiceElement = async () => {
     // add multi choice question
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.multipleChoiceQuestionAddButton)
       .click();
-    // click on second question to open it's settings window
-    await this.page
-      .getByRole("button", { name: CREATE_FORM_TEXTS.questionText })
-      .nth(2)
-      .click();
-    // make sure thr addOption button is visible
-    await expect(
-      this.page.getByTestId(CREATE_FORM_SELECTORS.addOptionButton),
-    ).toBeVisible({ timeout: 10000 });
-    // add 6 more options
-    for (let i = 0; i < 6; i++)
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.addOptionButton)
-        .click();
-  };
-
-  randomizeSingleChoiceQuestionOptions = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.randomizeSwitchLabel)
-      .click();
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.randomizeSwitchLabel)
-      .isVisible();
-  };
-
-  toggleMultiChoiceQuestionVisibility = async (turnOn: boolean) => {
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.hideSwitchLabel)
-      .getByTestId(CREATE_FORM_SELECTORS.nuiSwitchLabel)
-      .click();
-    await (turnOn
-      ? this.page
-          .getByTestId(CREATE_FORM_SELECTORS.hiddenErrorWarning)
-          .isHidden()
-      : this.page
-          .getByTestId(CREATE_FORM_SELECTORS.hiddenErrorWarning)
-          .isVisible());
   };
 
   publishForm = async () => {
@@ -115,28 +71,27 @@ export default class FormCreationPage {
     return new FormPage(newPage);
   };
 
-  verifySubmission = async ({
-    name,
-    email,
-    phoneNumber,
-  }: SubmissionDetails) => {
-    await this.openSubmissionsTab();
+  toggleMultiChoiceQuestionVisibility = async (turnOn: boolean) => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.hideSwitchLabel)
+      .getByTestId(CREATE_FORM_SELECTORS.nuiSwitchLabel)
+      .click();
+    await (turnOn
+      ? this.page
+          .getByTestId(CREATE_FORM_SELECTORS.hiddenErrorWarning)
+          .isHidden()
+      : this.page
+          .getByTestId(CREATE_FORM_SELECTORS.hiddenErrorWarning)
+          .isVisible());
+  };
 
-    // as it is sorted by time so our submission will be on top
-    const submissionRow = this.page
-      .getByRole("row")
-      .filter({ hasText: email })
-      .first();
-
-    await expect(submissionRow).toBeVisible();
-    await expect(submissionRow.getByText(name)).toBeVisible();
-    await expect(submissionRow.getByText(email)).toBeVisible();
-    // since us number have - and when submitted they are removed so while checking we remove too and then validate
-    await expect(
-      submissionRow.getByText(phoneNumber.replaceAll("-", " "), {
-        exact: false,
-      }),
-    ).toBeVisible();
+  randomizeSingleChoiceQuestionOptions = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.randomizeSwitchLabel)
+      .click();
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.randomizeSwitchLabel)
+      .isVisible();
   };
 
   deleteForm = async () => {
@@ -148,13 +103,6 @@ export default class FormCreationPage {
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.alertDeleteButton)
       .click();
-  };
-
-  verifyInitialFormInsightToBeZero = async () => {
-    this.verifyStartCount(0);
-    this.verifyStartCount(0);
-    this.verifySubmissionCount(0);
-    this.verifyCompletionPercentage(0);
   };
 
   openAnalyticsTab = async () => {
@@ -207,21 +155,40 @@ export default class FormCreationPage {
       .check();
   };
 
-  verifySecurePasswordField = async () => {
-    await this.setSecurePassword();
-    await this.saveFormChangesButton();
-    await this.gotSecurePasswordError();
-    await this.setSecurePassword("123");
-    await this.saveFormChangesButton();
-    await this.gotSecurePasswordError();
-    await this.setSecurePassword("abc");
-    await this.saveFormChangesButton();
-    await this.gotSecurePasswordError();
+  private getVisitLocator = () => {
+    return this.page
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.visitMetric)
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
   };
 
-  setSecurePasswordAndSave = async (password: string) => {
-    await this.setSecurePassword(password);
-    await this.saveFormChangesButton();
+  private getStartsLocator = () => {
+    return this.page
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.startsMetric)
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  };
+
+  private getSubmissionsLocator = () => {
+    return this.page
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.submissionsMetric)
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  };
+
+  private getCompletionLocator = () => {
+    return this.page
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.completionRateMetric)
+      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  };
+
+  openSubmissionsTab = async () => {
+    await this.page.waitForTimeout(2000);
+    await this.page.reload();
+    await this.page
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.submissionTab)
+      .click();
+  };
+
+  getSubmissionRow = async (identifier: string) => {
+    return this.page.getByRole("row").filter({ hasText: identifier }).first();
   };
 
   setSecurePassword = async (password = "") => {
@@ -248,115 +215,87 @@ export default class FormCreationPage {
     ).toBeHidden();
   };
 
-  openSubmissionsTab = async () => {
-    await this.page.waitForTimeout(2000);
-    await this.page.reload();
-    await this.page
-      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.submissionTab)
-      .click();
-  };
-
   verifyResponse = async (email: string) => {
     await expect(this.page.getByRole("link", { name: email })).toBeVisible();
   };
 
-  allowDuplicateSubmission = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.noTrackItemCheck)
-      .check();
-    await this.saveFormChangesButton();
-  };
-
-  allowUniqueSubmission = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.cookieTrackItemCheck)
-      .check();
-    await this.saveFormChangesButton();
-  };
-
-  openUniqueSubmissionCard = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.uniqueSubmissionCard)
-      .click();
-  };
-
-  deleteEmailElement = async () => {
+  openEmailDetailsDropdown = async () => {
     // open dropdown
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.emailDetailsDropdown)
       .click();
+  };
+
+  deleteEmailElement = async () => {
     // delete email element
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.deleteEmailButton)
       .click();
   };
 
-  addEmailElement = async () => {
-    // add Email element
-    await this.page.getByTestId(CREATE_FORM_SELECTORS.addEmailButton).click();
-  };
-
-  addSingleChoiceElementWithOnlyTwoOptions = async () => {
-    // click add element button
-    await this.clickAddElementButton();
-    // add single choice element
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.singleChoiceQuestionAddButton)
-      .click();
+  verifyLoadingSpinnerInvisible = async () => {
     // make sure the loading spinner is invisible
     await this.page.waitForSelector(CREATE_FORM_SELECTORS.loadingSpinner, {
       state: "hidden",
       timeout: 15000,
     });
-    // add pointer to first question
-    const questionBlock = this.page
-      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
-      .nth(0);
-    // question should be visible
-    await questionBlock.waitFor({ state: "visible" });
-    await questionBlock.scrollIntoViewIfNeeded();
-    // click on question to open settings page
-    await questionBlock.click();
+  };
+
+  verifyAddOptionButtonVisible = async () => {
     // check add option button is now visible to make sure settings page loaded properly
     await expect(
       this.page.getByTestId(CREATE_FORM_SELECTORS.addOptionButton),
     ).toBeVisible({
-      timeout: 15000,
+      timeout: 10000,
     });
-    // before clicking option 4 check it is visible
+  };
+
+  addOption = async () => {
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.addOptionButton).click();
+  };
+
+  checkOptionVisible = async (option: number) => {
+    // option check it is visible
     await expect(
-      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`),
+      this.page.getByTestId(
+        `${CREATE_FORM_SELECTORS.optionInput}-${option - 1}`,
+      ),
     ).toBeVisible({
       timeout: 10000,
     });
-    await this.page
-      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`)
-      .click();
-    await expect(
-      this.page.getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-3`),
-    ).toBeVisible();
-    await this.page
-      .getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-3`)
-      .click();
-    // verify option deleted
-    await expect(
-      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-3`),
-    ).toBeHidden();
+  };
 
-    // option 3 is visible
+  clickOption = async (option: number) => {
     await this.page
-      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-2`)
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${option - 1}`)
       .click();
+  };
+
+  deleteOptionButtonVisible = async (option: number) => {
     await expect(
-      this.page.getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-2`),
+      this.page.getByTestId(
+        `${CREATE_FORM_SELECTORS.deleteOptionButton}-${option - 1}`,
+      ),
     ).toBeVisible();
+  };
+
+  deleteOption = async (option: number) => {
     await this.page
-      .getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-2`)
+      .getByTestId(`${CREATE_FORM_SELECTORS.deleteOptionButton}-${option - 1}`)
       .click();
-    // verify option deleted
+  };
+
+  checkOptionHidden = async (option: number) => {
     await expect(
-      this.page.getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-2`),
+      this.page.getByTestId(
+        `${CREATE_FORM_SELECTORS.optionInput}-${option - 1}`,
+      ),
     ).toBeHidden();
+  };
+
+  addEmailElement = async () => {
+    // add Email element
+    await this.page.getByTestId(CREATE_FORM_SELECTORS.addEmailButton).click();
   };
 
   openConditionalLogicCard = async () => {
@@ -365,90 +304,133 @@ export default class FormCreationPage {
       .click();
   };
 
-  addConditionalLogicOfEmailDependencyOnOptionOne = async () => {
+  addNewCondition = async () => {
     // click on Add new condition button
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.addNewCondition)
       .click();
+  };
 
+  verifySelectValueContainerFieldVisibleInCondition = async () => {
     // make sure input field is visible
     await expect(
       this.page.locator(
         CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerField,
       ),
     ).toBeVisible({ timeout: 15000 });
+  };
 
+  openDependencyFromSelectValueContainerFieldInCondition = async () => {
     // open input field for dependency from
     await this.page
       .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerField)
       .click();
-    // choose single choice question
-    await this.page
-      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.typeAQuestionSelectValue)
-      .click();
+  };
 
+  selectQuestionAsDependencyFromSelectValueContainerFieldInCondition =
+    async () => {
+      // choose single choice question
+      await this.page
+        .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.typeAQuestionSelectValue)
+        .click();
+    };
+
+  openVerbSelectValueContainerFieldInCondition = async () => {
     // open input field for verb
     await this.page
       .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerVerb)
       .click();
+  };
+
+  selectIsEqualToVerbInSelectValueContainerFieldInCondition = async () => {
     // select the value to be equal to
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.isEqualToOption)
       .click();
+  };
 
+  openDependencyValueContainerInCondition = async () => {
     // open input field for value dependency
     await this.page
       .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerValue)
       .click();
+  };
+
+  selectOptionOneAsDependencyValueInCondition = async () => {
     // choose option 1 for dependency
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.optionOne)
       .click();
+  };
 
+  openActionInputFieldInContainerInCondition = async () => {
     // open action input field
     await this.page
       .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerActionType)
       .click();
+  };
+
+  selectShowActionInCondition = async () => {
     // select action to show
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.showAction)
       .click();
+  };
 
+  openConditionResultInContainerInCondition = async () => {
     // open field for what to show
     await this.page
       .locator(CREATE_FORM_SETTINGS_SELECTORS.selectValueContainerFields)
       .click();
+  };
+
+  selectEmailAsConditionalResult = async () => {
     // select Email to be shown
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.emailOption)
       .click();
+  };
 
-    // save the conditional logic
-    await this.saveFormChangesButton();
-    // verify conditional logic to be Hidden now
+  verifySaveChangesButtonHidden = async () => {
     await expect(
       this.page.getByTestId(CREATE_FORM_SELECTORS.saveChangesButton),
     ).toBeHidden();
   };
 
-  removeEmailDependency = async () => {
+  openConditionalLogicDropdown = async () => {
     // open conditional logic dropdown
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.conditionalLogicDropdown)
       .click();
+  };
+
+  disableConditionalLogic = async () => {
     // disable conditional logic
     await this.page
       .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.conditionalLogicDisableButton)
       .click();
   };
 
-  getEmailIdentifier = async () => {
+  openQuestionsSettingWindow = async (questionNumber: number) => {
     await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.emailPreviewGroup)
+      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
+      .nth(questionNumber - 1)
       .click();
+  };
+
+  openAdvanceProperties = async () => {
     await this.page
       .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
       .click();
+  };
+
+  openEmailSetting = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.emailPreviewGroup)
+      .click();
+  };
+
+  getEmailIdentifier = async () => {
     return await this.page
       .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
       .inputValue();
@@ -460,27 +442,17 @@ export default class FormCreationPage {
       .click();
   };
 
-  fillQuestionInStarElement = async (starRatingQuestion: string) => {
+  openElementContextField = async () => {
     await this.page.getByTestId(CREATE_FORM_SELECTORS.contextTextField).click();
+  };
+
+  fillTextInStarElement = async (starRatingQuestion: string) => {
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.contextTextField)
       .fill(starRatingQuestion);
   };
 
-  clickAddElementButton = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.addFormElementButton)
-      .click();
-  };
-
   getStarRatingIdentifier = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
-      .nth(1)
-      .click();
-    await this.page
-      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
-      .click();
     return await this.page
       .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
       .inputValue();
@@ -492,21 +464,13 @@ export default class FormCreationPage {
       .click();
   };
 
-  fillQuestionInOpinionScale = async (opinionScaleQuestion: string) => {
-    await this.page.getByTestId(CREATE_FORM_SELECTORS.contextTextField).click();
+  fillTextInOpinionScaleElement = async (opinionScaleQuestion: string) => {
     await this.page
       .getByTestId(CREATE_FORM_SELECTORS.contextTextField)
       .fill(opinionScaleQuestion);
   };
 
   getOpinionScaleIdentifier = async () => {
-    await this.page
-      .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
-      .nth(2)
-      .click();
-    await this.page
-      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
-      .click();
     return await this.page
       .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
       .inputValue();
@@ -522,65 +486,101 @@ export default class FormCreationPage {
       .fill(matrixText);
   };
 
-  getMatrixIdentifier = async () => {
+  openInputFieldOfRowInMatrix = async (optionNumber: number) => {
     await this.page
-      .getByRole("button", { name: CREATE_FORM_TEXTS.advancedProperties })
+      .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${optionNumber - 1}`)
       .click();
+  };
+
+  openInputFieldOfColInMatrix = async (optionNumber: number) => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${optionNumber - 1}`)
+      .click();
+  };
+
+  fillInputFieldOfRowContainer = async (
+    optionNumber: number,
+    value: string,
+  ) => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${optionNumber - 1}`)
+      .fill(value);
+  };
+
+  fillInputFieldOfColContainer = async (
+    optionNumber: number,
+    value: string,
+  ) => {
+    await this.page
+      .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
+      .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${optionNumber - 1}`)
+      .fill(value);
+  };
+
+  getMatrixIdentifier = async () => {
     return await this.page
       .getByTestId(CREATE_FORM_SELECTORS.fieldCodeTextField)
       .inputValue();
   };
 
-  fillValuesInRowAndColumnInMatrix = async ({
-    rows = [],
-    cols = [],
-  }: {
-    rows: string[];
-    cols: string[];
-  }) => {
-    for (let i = 0; i < rows.length; i++) {
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
-        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
-        .click();
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.matrixRowContainer)
-        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
-        .fill(rows[i]);
-    }
-    for (let i = 0; i < cols.length; i++) {
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
-        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
-        .click();
-      await this.page
-        .getByTestId(CREATE_FORM_SELECTORS.matrixColContainer)
-        .getByTestId(`${CREATE_FORM_SELECTORS.optionInput}-${i}`)
-        .fill(cols[i]);
-    }
+  openUniqueSubmissionCard = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.uniqueSubmissionCard)
+      .click();
   };
 
-  private getVisitLocator = () => {
-    return this.page
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.visitMetric)
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  allowUniqueSubmission = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.cookieTrackItemCheck)
+      .check();
+    await this.saveFormChangesButton();
   };
 
-  private getStartsLocator = () => {
-    return this.page
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.startsMetric)
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  allowDuplicateSubmission = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SETTINGS_SELECTORS.noTrackItemCheck)
+      .check();
+    await this.saveFormChangesButton();
   };
 
-  private getSubmissionsLocator = () => {
-    return this.page
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.submissionsMetric)
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+  openSubmittedResponse = async (responseNumber: number) => {
+    await this.page
+      .getByTestId(
+        `${CREATE_FORM_SUBMISSIONS_SELECTORS.submittedResponse}-${responseNumber}`,
+      )
+      .click();
   };
 
-  private getCompletionLocator = () => {
+  openDropdownForDownloadType = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.dropdownElement)
+      .click();
+  };
+
+  checkDownloadAsPdf = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.downloadAsPdfCheckbox)
+      .check();
+  };
+
+  downloadSubmissions = async () => {
+    await this.page
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.downloadButton)
+      .click();
+  };
+
+  paneCloseButtonVisibility = async () => {
     return this.page
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.completionRateMetric)
-      .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.insightCount);
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.paneCloseButton)
+      .isVisible();
+  };
+
+  closePane = async () => {
+    this.page
+      .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.paneCloseButton)
+      .click();
   };
 }

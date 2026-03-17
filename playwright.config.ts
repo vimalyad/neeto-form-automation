@@ -10,7 +10,7 @@ export default defineConfig({
   testDir: "./e2e",
   // folder containing all tests
 
-  fullyParallel: true,
+  fullyParallel: false,
   // by default playwright runs different test files in parallel but tests inside the same file sequentially
   // setting this it to true so that Playwright run every single test block simultaneously , regardless of what file it is in
 
@@ -20,7 +20,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   // the number of times Playwright will retry test if it fails
 
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 2,
   // if undefined , Playwright uses half of CPU cores , but it is recommended to keep it 1 so that server doesn't get overloaded
 
   reporter: "html",

@@ -1,8 +1,8 @@
 import { getNewPageWithCleanContext } from "@utils/pageCreation";
 
 import { test } from "@fixtures";
-import FormPage from "../poms/form/form";
 import { generatePassword, getMockData } from "@utils/testData";
+import FormPage from "@poms/form/form";
 
 test.describe("Form Features", () => {
   let mockUser: ReturnType<typeof getMockData> = getMockData();
@@ -40,12 +40,22 @@ test.describe("Form Features", () => {
     await test.step("Select 'Secure with password' option", () =>
       formCreationPage.setSecurePasswordToForm());
 
-    await test.step("Verify password field validations", () =>
-      formCreationPage.verifySecurePasswordField());
+    await test.step("Verify password field validations", async () => {
+      await formCreationPage.setSecurePassword();
+      await formCreationPage.saveFormChangesButton();
+      await formCreationPage.gotSecurePasswordError();
+      await formCreationPage.setSecurePassword("123");
+      await formCreationPage.saveFormChangesButton();
+      await formCreationPage.gotSecurePasswordError();
+      await formCreationPage.setSecurePassword("abc");
+      await formCreationPage.saveFormChangesButton();
+      await formCreationPage.gotSecurePasswordError();
+    });
 
-    await test.step("Enter password and save changes", () =>
-      formCreationPage.setSecurePasswordAndSave(password));
-
+    await test.step("Enter password and save changes", async () => {
+      await formCreationPage.setSecurePassword(password);
+      await formCreationPage.saveFormChangesButton();
+    });
     await test.step("Verify form is password protected in a clean session", async () => {
       formPage = await formCreationPage.openFormPage(page.context());
       const formUrl = formPage.page.url();
@@ -59,10 +69,15 @@ test.describe("Form Features", () => {
 
       const newFormPage = new FormPage(newPage);
 
-      await newFormPage.verifyFormIsPasswordProtectedAndFillForm({
-        email: mockUser.email,
-        password: password,
-      });
+      await newFormPage.verifyFormPasswordProtected();
+      await newFormPage.fillFormSecurePassword("123");
+      await newFormPage.continueToFormPage();
+      await newFormPage.verifyPasswordInputError();
+      await newFormPage.fillFormSecurePassword(password);
+      await newFormPage.continueToFormPage();
+      await newFormPage.fillEmail(mockUser.email);
+      await newFormPage.submitForm();
+      await newFormPage.verifyThankYouOnPage();
     });
 
     await test.step("Verify form response", async () => {

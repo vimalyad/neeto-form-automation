@@ -1,5 +1,5 @@
 import { test } from "@fixtures";
-import FormPage from "../poms/form/form";
+import FormPage from "@poms/form/form";
 import { getMockData } from "@utils/testData";
 
 test.describe("Form Features", () => {
@@ -28,8 +28,12 @@ test.describe("Form Features", () => {
     await test.step("Open Analytics tab", () =>
       formCreationPage.openAnalyticsTab());
 
-    await test.step("Verify initial insights to be zero", () =>
-      formCreationPage.verifyInitialFormInsightToBeZero());
+    await test.step("Verify initial insights to be zero", async () => {
+      await formCreationPage.verifyVisitCount(0);
+      await formCreationPage.verifyStartCount(0);
+      await formCreationPage.verifySubmissionCount(0);
+      await formCreationPage.verifyCompletionPercentage(0);
+    });
 
     await test.step("Open form page", async () => {
       formPage = await formCreationPage.openFormPage(page.context());

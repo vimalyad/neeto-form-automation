@@ -1,10 +1,17 @@
 import { test } from "@fixtures";
 import { faker } from "@faker-js/faker";
-import FormPage from "@poms/form/form";
+import { expect, Page } from "@playwright/test";
+import { getPdfTextAndDeletePdf } from "@utils/pdfParser";
+import { SUBMISSION_PREVIEW_SELECTORS } from "@selectors/submissionPreview";
 import FormCreationPage from "@poms/form/createForm";
+import FormPage from "@poms/form/form";
 
 test.describe("Form Features", () => {
   let formPage: FormPage;
+  let email: string;
+  let starRating: string;
+  let opinionScaleRating: string;
+  let downloadPage: Page;
   let starRatingQuestion: string;
   let opinionScaleQuestion: string;
   let matrixRow1: string;
@@ -12,23 +19,21 @@ test.describe("Form Features", () => {
   let matrixCol1: string;
   let matrixCol2: string;
   let matrixText: string;
-  let email: string;
-  let starRating: string;
-  let opinionScaleRating: string;
-
-  let identifierOfEmail: string;
-  let identifierOfStarRating: string;
-  let identifierOfOpinionScale: string;
-  let identifierOfMatrix: string;
 
   test.beforeEach(async ({ dashboardPage, formCreationPage }) => {
+    // from dashboard go to formCreation page
     await dashboardPage.goToFormCreationPage();
+
+    // now click on create form
     await formCreationPage.createForm();
+
+    email = faker.internet.email();
+    opinionScaleRating = faker.number.int({ min: 1, max: 10 }).toString();
+    starRating = faker.number.int({ min: 1, max: 5 }).toString();
 
     starRatingQuestion = faker.lorem.sentence({ min: 3, max: 8 });
     opinionScaleQuestion = faker.lorem.sentence({ min: 3, max: 8 });
     matrixText = faker.lorem.sentence({ min: 3, max: 8 });
-    email = faker.internet.email();
 
     [matrixRow1, matrixRow2] = faker.helpers.uniqueArray(
       () => faker.lorem.word(),
@@ -38,27 +43,19 @@ test.describe("Form Features", () => {
       () => faker.lorem.word(),
       2,
     );
-
-    opinionScaleRating = faker.number.int({ min: 1, max: 10 }).toString();
-    starRating = faker.number.int({ min: 1, max: 5 }).toString();
   });
 
+  // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
+    if (await formCreationPage.paneCloseButtonVisibility()) {
+      await formCreationPage.closePane();
+    }
     await test.step("Cleanup: Delete form", async () =>
       formCreationPage.deleteForm());
   });
 
-  test("Pre-fill form using URL parameters", async ({
-    formCreationPage,
-    page,
-    browser,
-  }) => {
+  test("Download submissions", async ({ page, formCreationPage }) => {
     test.setTimeout(60000);
-    await test.step("Add a star rating, opinion scale and matrix fields", async () => {
-      await formCreationPage.openEmailSetting();
-      await formCreationPage.openAdvanceProperties();
-      identifierOfEmail = await formCreationPage.getEmailIdentifier();
-    });
 
     await test.step("Click add element button", () =>
       formCreationPage.clickAddElementButton());
@@ -71,14 +68,11 @@ test.describe("Form Features", () => {
       await formCreationPage.fillTextInStarElement(starRatingQuestion);
     });
 
-    await test.step("Get star element identifier", async () => {
-      await formCreationPage.openQuestionsSettingWindow(2);
-      await formCreationPage.openAdvanceProperties();
-      identifierOfStarRating = await formCreationPage.getStarRatingIdentifier();
-    });
-
     await test.step("Add opinion scale element", () =>
       formCreationPage.addOpinionScaleElement());
+
+    await test.step("Open opinion scale question's setting window", () =>
+      formCreationPage.openQuestionsSettingWindow(3));
 
     await test.step("Fill question in opinion scale element", async () => {
       await formCreationPage.openElementContextField();
@@ -87,15 +81,11 @@ test.describe("Form Features", () => {
       );
     });
 
-    await test.step("Get opinion scale element identifier", async () => {
-      await formCreationPage.openQuestionsSettingWindow(3);
-      await formCreationPage.openAdvanceProperties();
-      identifierOfOpinionScale =
-        await formCreationPage.getOpinionScaleIdentifier();
-    });
-
     await test.step("Add matrix element", () =>
       formCreationPage.addMatrixElement());
+
+    await test.step("Open matrix's setting window", () =>
+      formCreationPage.openQuestionsSettingWindow(4));
 
     await test.step("Fill text in Matrix element", () =>
       formCreationPage.fillQuestionInMatrix(matrixText));
@@ -113,50 +103,71 @@ test.describe("Form Features", () => {
 
       await formCreationPage.page.waitForLoadState("networkidle");
     });
-
-    await test.step("Get matrix element identifier", async () => {
-      await formCreationPage.openAdvanceProperties();
-      identifierOfMatrix = await formCreationPage.getMatrixIdentifier();
-    });
-
     await test.step("Publish the form", () => formCreationPage.publishForm());
 
     await test.step("Open form page", async () => {
       formPage = await new FormCreationPage(page).openFormPage(page.context());
     });
 
-    const formUrl = formPage.page.url();
+    await test.step("Fill email", () => formPage.fillEmail(email));
 
-    await test.step("close published form", () => formPage.page.close());
+    await test.step("Fill star rating", () =>
+      formPage.fillStarRating(starRating));
 
-    const params = new URLSearchParams();
+    await test.step("Fill opinion scale rating", () =>
+      formPage.fillOpinionScale(opinionScaleRating));
 
-    params.append(identifierOfEmail, email);
-    params.append(identifierOfOpinionScale, opinionScaleRating);
-    params.append(identifierOfStarRating, starRating);
-    params.append(`${identifierOfMatrix}.${matrixRow1}`, matrixCol2);
-    params.append(`${identifierOfMatrix}.${matrixRow2}`, matrixCol1);
+    await test.step("Fill matrix", async () => {
+      await formPage.checkMatrixLabel(1);
+      await formPage.checkMatrixLabel(4);
+    });
 
-    const url = `${formUrl}?${params.toString()}`;
+    await test.step("Submit form", () => formPage.submitForm());
 
-    const newPage = await browser.newPage();
-    await newPage.goto(url);
+    await test.step("Verify and close page", async () => {
+      await formPage.verifyThankYouOnPage();
+      await formPage.page.close();
+    });
 
-    await newPage.waitForLoadState("networkidle");
+    await test.step("Open submissions tab", () =>
+      formCreationPage.openSubmissionsTab());
 
-    formPage = new FormPage(newPage);
+    await test.step("Open submitted response", () =>
+      formCreationPage.openSubmittedResponse(1));
 
-    await test.step("verify email", () => formPage.checkEmailValueMatch(email));
+    await test.step("Open dropdown and select pdf", async () => {
+      await formCreationPage.openDropdownForDownloadType();
+      await formCreationPage.checkDownloadAsPdf();
+    });
 
-    await test.step("verify star", () =>
-      formPage.checkStarValueMatch(starRating));
+    await test.step("Download and verify PDF", async () => {
+      const requestPromise = formCreationPage.page
+        .context()
+        .waitForEvent("request", (req) =>
+          req.url().includes(SUBMISSION_PREVIEW_SELECTORS.urlPart),
+        );
 
-    await test.step("verify opinion scale", () =>
-      formPage.checkOpinionScaleMatch(opinionScaleRating));
+      const popupPromise = formCreationPage.page.waitForEvent("popup");
 
-    await test.step("verify matrix values", async () => {
-      await formPage.verifyMatrixSelection(matrixRow1, matrixCol2);
-      await formPage.verifyMatrixSelection(matrixRow2, matrixCol1);
+      await formCreationPage.downloadSubmissions();
+
+      downloadPage = await popupPromise;
+      const request = await requestPromise;
+
+      const pdfUrl = request.url();
+
+      const response = await downloadPage.context().request.get(pdfUrl);
+      expect(response.ok()).toBeTruthy();
+
+      const pdfText = await getPdfTextAndDeletePdf(await response.body());
+
+      expect(pdfText).toMatch(new RegExp(email, "i"));
+      expect(pdfText).toContain(starRating);
+      expect(pdfText).toContain(opinionScaleRating);
+      expect(pdfText).toContain(`${matrixRow1}: ${matrixCol1}`);
+      expect(pdfText).toContain(`${matrixRow2}: ${matrixCol2}`);
+
+      await downloadPage.close();
     });
   });
 });
