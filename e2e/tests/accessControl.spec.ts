@@ -78,6 +78,8 @@ test.describe("Form Features", () => {
       await newFormPage.fillEmail(mockUser.email);
       await newFormPage.submitForm();
       await newFormPage.verifyThankYouOnPage();
+
+      await newFormPage.page.close();
     });
 
     await test.step("Verify form response", async () => {

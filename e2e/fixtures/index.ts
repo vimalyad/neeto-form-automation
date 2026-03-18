@@ -11,6 +11,7 @@ export const test = base.extend<ExtendedFixtures>({
   page: async ({ page }, use) => {
     await page.goto("/");
     await use(page);
+    await page.close();
   },
 
   dashboardPage: async ({ page }, use) => {

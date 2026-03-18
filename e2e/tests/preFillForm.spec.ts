@@ -158,5 +158,7 @@ test.describe("Form Features", () => {
       await formPage.verifyMatrixSelection(matrixRow1, matrixCol2);
       await formPage.verifyMatrixSelection(matrixRow2, matrixCol1);
     });
+
+    await test.step("Close the page", () => formPage.page.close());
   });
 });

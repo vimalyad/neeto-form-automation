@@ -20,14 +20,14 @@ test.describe("Form Features", () => {
       formCreationPage.deleteForm());
   });
 
-  test("Unique submisions", async ({ formCreationPage, page }) => {
+  test("Unique submissions", async ({ formCreationPage, page }) => {
     test.setTimeout(60000);
     await test.step("Publish form", () => formCreationPage.publishForm());
 
     await test.step("Open settings tab", () =>
       formCreationPage.openSettingsTab());
 
-    await test.step("Unqiue submission Card", () =>
+    await test.step("Unique submission Card", () =>
       formCreationPage.openUniqueSubmissionCard());
 
     await test.step("Check unique cookies", () =>

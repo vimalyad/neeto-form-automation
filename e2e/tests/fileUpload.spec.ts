@@ -18,5 +18,7 @@ test.describe("File Upload - practice.expandtesting.com", () => {
     await page.setInputFiles('input[type="file"]', filePath);
 
     await page.getByRole("button", { name: "Upload" }).click();
+
+    await page.close();
   });
 });
