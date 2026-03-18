@@ -2,6 +2,7 @@ import { test } from "@fixtures";
 import { faker } from "@faker-js/faker";
 import FormPage from "@poms/form/form";
 import FormCreationPage from "@poms/form/createForm";
+import { getWaitForRecordSaved } from "@utils/waitForResponses";
 
 test.describe("Form Features", () => {
   let formPage: FormPage;
@@ -53,6 +54,7 @@ test.describe("Form Features", () => {
     page,
     browser,
   }) => {
+
     await test.step("Add a star rating, opinion scale and matrix fields", async () => {
       await formCreationPage.openEmailSetting();
       await formCreationPage.openAdvanceProperties();
@@ -100,17 +102,26 @@ test.describe("Form Features", () => {
       formCreationPage.fillQuestionInMatrix(matrixText));
 
     await test.step("Fill rows and columns in Matrix element", async () => {
+
       await formCreationPage.openInputFieldOfRowInMatrix(1);
+      let waitForRecords = getWaitForRecordSaved(formCreationPage);
       await formCreationPage.fillInputFieldOfRowContainer(1, matrixRow1);
+      await waitForRecords;
+
       await formCreationPage.openInputFieldOfRowInMatrix(2);
+      waitForRecords = getWaitForRecordSaved(formCreationPage);
       await formCreationPage.fillInputFieldOfRowContainer(2, matrixRow2);
+      await waitForRecords;
 
       await formCreationPage.openInputFieldOfColInMatrix(1);
+      waitForRecords = getWaitForRecordSaved(formCreationPage);
       await formCreationPage.fillInputFieldOfColContainer(1, matrixCol1);
-      await formCreationPage.openInputFieldOfColInMatrix(2);
-      await formCreationPage.fillInputFieldOfColContainer(2, matrixCol2);
+      await waitForRecords;
 
-      await formCreationPage.page.waitForLoadState("networkidle");
+      await formCreationPage.openInputFieldOfColInMatrix(2);
+      waitForRecords = getWaitForRecordSaved(formCreationPage);
+      await formCreationPage.fillInputFieldOfColContainer(2, matrixCol2);
+      await waitForRecords;
     });
 
     await test.step("Get matrix element identifier", async () => {
@@ -124,9 +135,12 @@ test.describe("Form Features", () => {
       formPage = await new FormCreationPage(page).openFormPage();
     });
 
-    const formUrl = formPage.page.url();
+    let formUrl: string;
 
-    await test.step("close published form", () => formPage.page.close());
+    await test.step("get Url and close form page", async () => {
+      formUrl = formPage.page.url();
+      await formPage.page.close()
+    });
 
     const params = new URLSearchParams();
 
@@ -140,8 +154,6 @@ test.describe("Form Features", () => {
 
     const newPage = await browser.newPage();
     await newPage.goto(url);
-
-    await newPage.waitForLoadState("networkidle");
 
     formPage = new FormPage(newPage);
 

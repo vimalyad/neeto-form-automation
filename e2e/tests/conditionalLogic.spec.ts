@@ -19,7 +19,7 @@ test.describe("Form Features", () => {
       formCreationPage.deleteForm());
   });
 
-  test("Conditional logic", async ({ formCreationPage, page }) => {
+  test("Conditional logic", async ({ formCreationPage }) => {
 
     await test.step("Delete Email Element", async () => {
       await formCreationPage.openEmailDetailsDropdown();

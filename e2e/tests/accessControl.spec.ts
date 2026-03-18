@@ -3,6 +3,7 @@ import { getNewPageWithCleanContext } from "@utils/pageCreation";
 import { test } from "@fixtures";
 import { generatePassword, getMockData } from "@utils/testData";
 import FormPage from "@poms/form/form";
+import { getSubmissionsLoaded } from "@utils/waitForResponses";
 
 test.describe("Form Features", () => {
   let mockUser: ReturnType<typeof getMockData>;
@@ -111,14 +112,7 @@ test.describe("Form Features", () => {
       // open submissions tab
       await formCreationPage.openSubmissionsTab();
       // now instead of waiting for complete page to settle we want only the endpoint useful for us to bring back the response
-      const submissionsLoaded = formCreationPage.page.waitForResponse(
-        (response) =>
-          response.url().includes("/api/v1/forms/") &&
-          response.url().includes("/submissions") &&
-          response.request().method() === "GET" &&
-          response.status() === 200
-      );
-      // await formCreationPage.page.reload();
+      const submissionsLoaded = getSubmissionsLoaded(formCreationPage);
       await submissionsLoaded;
       // verify response
       await formCreationPage.verifyResponse(mockUser.email);

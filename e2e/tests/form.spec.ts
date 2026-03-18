@@ -1,8 +1,8 @@
 import { test } from "@fixtures";
 import { expect } from "@playwright/test";
 import FormPage from "@poms/form/form";
-
 import { getMockData, transformToFullName } from "@utils/testData";
+import { openFormPageWithAttempts, getSubmissionsLoaded } from "@utils/waitForResponses";
 
 test.describe("Form Features", () => {
     let mockUser: ReturnType<typeof getMockData> = getMockData();
@@ -22,7 +22,8 @@ test.describe("Form Features", () => {
             formCreationPage.deleteForm());
     });
 
-    test("Create and submit a form", async ({ formCreationPage, page }) => {
+    test("Create and submit a form", async ({ formCreationPage }) => {
+
         await test.step("Add name and phone number fields", async () => {
             await formCreationPage.clickAddElementButton();
             await formCreationPage.addNameElement();
@@ -32,8 +33,7 @@ test.describe("Form Features", () => {
         await test.step("publish form page", () => formCreationPage.publishForm());
 
         await test.step("Open created form", async () => {
-            // page.context() gives us the BrowserContext
-            formPage = await formCreationPage.openFormPage();
+            formPage = await openFormPageWithAttempts(formCreationPage);
         });
 
         await test.step("Verify fields", async () => {
@@ -84,9 +84,13 @@ test.describe("Form Features", () => {
         await test.step("Close form page", () => formPage.page.close());
 
         await test.step("Verify submitted response", async () => {
-            await formCreationPage.page.reload();
-            await formCreationPage.page.waitForLoadState('networkidle');
+
+            const submissionsLoaded = getSubmissionsLoaded(formCreationPage);
+
+            // directly visiting openSubmissions Tab to force refetching
             await formCreationPage.openSubmissionsTab();
+            await submissionsLoaded;
+
             // as it is sorted by time so our submission will be on top
             const submissionRow = await formCreationPage.getSubmissionRow(
                 mockUser.email,
@@ -98,7 +102,10 @@ test.describe("Form Features", () => {
                 ),
             ).toBeVisible();
             await expect(submissionRow.getByText(mockUser.email)).toBeVisible();
-            // since US number have - and when submitted they are removed so while checking we remove too and then validate
+
+
+            // since US number have '-' and when submitted they are removed
+            // so while checking we remove too, and then validate
             await expect(
                 submissionRow.getByText(mockUser.validPhone.replaceAll("-", " "), {
                     exact: false,
