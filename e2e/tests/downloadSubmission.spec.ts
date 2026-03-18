@@ -2,7 +2,6 @@ import { test } from "@fixtures";
 import { faker } from "@faker-js/faker";
 import { expect, Page } from "@playwright/test";
 import { getPdfTextAndDeletePdf } from "@utils/pdfParser";
-import { SUBMISSION_PREVIEW_SELECTORS } from "@selectors/submissionPreview";
 import FormCreationPage from "@poms/form/createForm";
 import FormPage from "@poms/form/form";
 import { getExportPagePromise, getSubmissionsLoaded, getWaitForRecordSaved } from "@utils/waitForResponses";

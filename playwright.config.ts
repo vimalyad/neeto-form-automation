@@ -20,7 +20,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 1,
   // the number of times Playwright will retry test if it fails
 
-  workers: process.env.CI ? 1 : 1,
+  workers: process.env.CI ? 1 : 2,
   // if undefined , Playwright uses half of CPU cores , but it is recommended to keep it 1 so that server doesn't get overloaded
 
   reporter: "html",

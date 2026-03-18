@@ -37,6 +37,7 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Fill form with email and submit and verify submission", async () => {
+      await formPage.verifyEmailFieldExist();
       await formPage.fillEmail(mockUser.email);
       await formPage.submitForm();
       await formPage.verifyThankYouOnPage();

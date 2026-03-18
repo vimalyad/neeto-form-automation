@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import FormPage from "@poms/form/form";
 import { FORM_SELECTORS } from "@selectors";
 import { FORM_ERRORS_TEXT } from "@texts/form";
+import { openFormPageWithAttempts, publishFormWait } from "@utils/waitForResponses";
 
 test.describe("Form Features", () => {
   let formPage: FormPage;
@@ -49,28 +50,11 @@ test.describe("Form Features", () => {
       formCreationPage.toggleMultiChoiceQuestionVisibility(false));
 
     await test.step("Publish the form", async () => {
-      // add pointer to wait for response of publishing form
-      const publishComplete = formCreationPage.page.waitForResponse(
-        (res) =>
-          res.url().includes("/api/v1/forms/publish/") &&
-          res.request().method() === "PUT" &&
-          res.status() === 200
-      );
-      await formCreationPage.publishForm();
-      await publishComplete;
+      await publishFormWait(formCreationPage);
     });
 
     await test.step("Open published version of form", async () => {
-      // page.waitForEvent() listens only for that page
-      // but page.context().waitForEvent() listens for complete browser context of that instance
-      const attemptTracked = formCreationPage.page.context().waitForEvent(
-        "response",
-        (res) =>
-          res.url().includes("/api/v1/forms/attempts/") &&
-          res.request().method() === "PATCH"
-      );
-      formPage = await formCreationPage.openFormPage();
-      await attemptTracked;
+      formPage = await openFormPageWithAttempts(formCreationPage);
     });
 
     await test.step("Ensure options of single choice element are randomized", async () => {
@@ -105,25 +89,11 @@ test.describe("Form Features", () => {
       formCreationPage.toggleMultiChoiceQuestionVisibility(true));
 
     await test.step("Publish the form", async () => {
-      const publishComplete = formCreationPage.page.waitForResponse(
-        (res) =>
-          res.url().includes("/api/v1/forms/publish/") &&
-          res.request().method() === "PUT" &&
-          res.status() === 200
-      );
-      await formCreationPage.publishForm();
-      await publishComplete;
+      await publishFormWait(formCreationPage);
     });
 
     await test.step("Open published version of form", async () => {
-      const attemptTracked = formCreationPage.page.context().waitForEvent(
-        "response",
-        (res) =>
-          res.url().includes("/api/v1/forms/attempts/") &&
-          res.request().method() === "PATCH"
-      );
-      formPage = await formCreationPage.openFormPage();
-      await attemptTracked;
+      formPage = await openFormPageWithAttempts(formCreationPage);
     });
 
     await test.step("Ensure the field is now visible on the published form.", () =>
