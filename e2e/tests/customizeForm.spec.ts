@@ -23,9 +23,7 @@ test.describe("Form Features", () => {
 
   test("Customize form's field elements", async ({
     formCreationPage,
-    page,
   }) => {
-    test.setTimeout(60000);
     await test.step("Add single choice element with 6 additional options", async () => {
       await formCreationPage.clickAddElementButton();
       await formCreationPage.addSingleChoiceElement();
@@ -51,13 +49,28 @@ test.describe("Form Features", () => {
       formCreationPage.toggleMultiChoiceQuestionVisibility(false));
 
     await test.step("Publish the form", async () => {
+      // add pointer to wait for response of publishing form
+      const publishComplete = formCreationPage.page.waitForResponse(
+        (res) =>
+          res.url().includes("/api/v1/forms/publish/") &&
+          res.request().method() === "PUT" &&
+          res.status() === 200
+      );
       await formCreationPage.publishForm();
-      await page.waitForLoadState("networkidle");
+      await publishComplete;
     });
 
     await test.step("Open published version of form", async () => {
+      // page.waitForEvent() listens only for that page
+      // but page.context().waitForEvent() listens for complete browser context of that instance
+      const attemptTracked = formCreationPage.page.context().waitForEvent(
+        "response",
+        (res) =>
+          res.url().includes("/api/v1/forms/attempts/") &&
+          res.request().method() === "PATCH"
+      );
       formPage = await formCreationPage.openFormPage();
-      await page.waitForLoadState("networkidle");
+      await attemptTracked;
     });
 
     await test.step("Ensure options of single choice element are randomized", async () => {
@@ -66,7 +79,8 @@ test.describe("Form Features", () => {
       );
       // get the container storing all options of single-choice-question
 
-      // playwright will wait upto 15 sec while it will be scanning dom every millisecond and as soon as it finds it , it will move to next
+      // playwright will wait upto 15 sec while it will be scanning dom every millisecond 
+      // and as soon as it finds it , it will move to next
       await expect(optionsContainer).toBeVisible({ timeout: 15000 });
 
       // get all option's textContent
@@ -91,12 +105,25 @@ test.describe("Form Features", () => {
       formCreationPage.toggleMultiChoiceQuestionVisibility(true));
 
     await test.step("Publish the form", async () => {
+      const publishComplete = formCreationPage.page.waitForResponse(
+        (res) =>
+          res.url().includes("/api/v1/forms/publish/") &&
+          res.request().method() === "PUT" &&
+          res.status() === 200
+      );
       await formCreationPage.publishForm();
-      await page.waitForLoadState("networkidle");
+      await publishComplete;
     });
 
     await test.step("Open published version of form", async () => {
+      const attemptTracked = formCreationPage.page.context().waitForEvent(
+        "response",
+        (res) =>
+          res.url().includes("/api/v1/forms/attempts/") &&
+          res.request().method() === "PATCH"
+      );
       formPage = await formCreationPage.openFormPage();
+      await attemptTracked;
     });
 
     await test.step("Ensure the field is now visible on the published form.", () =>

@@ -23,7 +23,6 @@ test.describe("Form Features", () => {
     });
 
     test("Create and submit a form", async ({ formCreationPage, page }) => {
-        test.setTimeout(60000);
         await test.step("Add name and phone number fields", async () => {
             await formCreationPage.clickAddElementButton();
             await formCreationPage.addNameElement();
@@ -99,7 +98,7 @@ test.describe("Form Features", () => {
                 ),
             ).toBeVisible();
             await expect(submissionRow.getByText(mockUser.email)).toBeVisible();
-            // since us number have - and when submitted they are removed so while checking we remove too and then validate
+            // since US number have - and when submitted they are removed so while checking we remove too and then validate
             await expect(
                 submissionRow.getByText(mockUser.validPhone.replaceAll("-", " "), {
                     exact: false,

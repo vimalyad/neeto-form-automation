@@ -5,6 +5,7 @@ import { getPdfTextAndDeletePdf } from "@utils/pdfParser";
 import { SUBMISSION_PREVIEW_SELECTORS } from "@selectors/submissionPreview";
 import FormCreationPage from "@poms/form/createForm";
 import FormPage from "@poms/form/form";
+import { waitForRecordSaved } from "@utils/waitForResponses";
 
 test.describe("Form Features", () => {
   let formPage: FormPage;
@@ -56,7 +57,6 @@ test.describe("Form Features", () => {
 
   test("Download submissions", async ({ page, formCreationPage }) => {
     test.setTimeout(60000);
-
     await test.step("Click add element button", () =>
       formCreationPage.clickAddElementButton());
 
@@ -93,16 +93,23 @@ test.describe("Form Features", () => {
     await test.step("Fill rows and columns in Matrix element", async () => {
       await formCreationPage.openInputFieldOfRowInMatrix(1);
       await formCreationPage.fillInputFieldOfRowContainer(1, matrixRow1);
+
+      // we will wait after each value insertion so that form is properly updated
+      await waitForRecordSaved(formCreationPage);
+
       await formCreationPage.openInputFieldOfRowInMatrix(2);
       await formCreationPage.fillInputFieldOfRowContainer(2, matrixRow2);
+      await waitForRecordSaved(formCreationPage);
 
       await formCreationPage.openInputFieldOfColInMatrix(1);
       await formCreationPage.fillInputFieldOfColContainer(1, matrixCol1);
+      await waitForRecordSaved(formCreationPage);
+
       await formCreationPage.openInputFieldOfColInMatrix(2);
       await formCreationPage.fillInputFieldOfColContainer(2, matrixCol2);
-
-      await formCreationPage.page.waitForLoadState("networkidle");
+      await waitForRecordSaved(formCreationPage);
     });
+
     await test.step("Publish the form", () => formCreationPage.publishForm());
 
     await test.step("Open form page", async () => {
@@ -130,12 +137,16 @@ test.describe("Form Features", () => {
     });
 
     await test.step("reload form creation page", async () => {
-      await formCreationPage.page.reload();
-      await formCreationPage.page.waitForLoadState("networkidle");
+      const submissionsLoaded = formCreationPage.page.waitForResponse(
+        (res) =>
+          res.url().includes("/api/v1/forms/") &&
+          res.url().includes("/submissions") &&
+          res.request().method() === "GET" &&
+          res.status() === 200
+      );
+      await formCreationPage.openSubmissionsTab()
+      await submissionsLoaded;
     });
-
-    await test.step("Open submissions tab", () =>
-      formCreationPage.openSubmissionsTab());
 
     await test.step("Open submitted response", () =>
       formCreationPage.openSubmittedResponse(1));

@@ -21,7 +21,6 @@ test.describe("Form Features", () => {
   });
 
   test("Unique submissions", async ({ formCreationPage }) => {
-    test.setTimeout(60000);
     await test.step("Publish form", () => formCreationPage.publishForm());
 
     await test.step("Open settings tab", () =>

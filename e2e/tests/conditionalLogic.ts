@@ -20,7 +20,6 @@ test.describe("Form Features", () => {
   });
 
   test("Conditional logic", async ({ formCreationPage, page }) => {
-    test.setTimeout(60000);
 
     await test.step("Delete Email Element", async () => {
       await formCreationPage.openEmailDetailsDropdown();

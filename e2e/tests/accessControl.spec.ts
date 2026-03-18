@@ -30,11 +30,8 @@ test.describe("Form Features", () => {
 
   test("Access control the form with password protection", async ({
     formCreationPage,
-    page,
     browser,
   }) => {
-    test.setTimeout(60000);
-
     // publish the form 
     await test.step("Publish form", () => formCreationPage.publishForm());
 
@@ -111,10 +108,18 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Verify form response", async () => {
-      await formCreationPage.page.reload();
-      await formCreationPage.page.waitForLoadState("networkidle");
       // open submissions tab
       await formCreationPage.openSubmissionsTab();
+      // now instead of waiting for complete page to settle we want only the endpoint useful for us to bring back the response
+      const submissionsLoaded = formCreationPage.page.waitForResponse(
+        (response) =>
+          response.url().includes("/api/v1/forms/") &&
+          response.url().includes("/submissions") &&
+          response.request().method() === "GET" &&
+          response.status() === 200
+      );
+      // await formCreationPage.page.reload();
+      await submissionsLoaded;
       // verify response
       await formCreationPage.verifyResponse(mockUser.email);
     });

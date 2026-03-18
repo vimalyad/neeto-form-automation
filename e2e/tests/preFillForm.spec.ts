@@ -53,7 +53,6 @@ test.describe("Form Features", () => {
     page,
     browser,
   }) => {
-    test.setTimeout(60000);
     await test.step("Add a star rating, opinion scale and matrix fields", async () => {
       await formCreationPage.openEmailSetting();
       await formCreationPage.openAdvanceProperties();

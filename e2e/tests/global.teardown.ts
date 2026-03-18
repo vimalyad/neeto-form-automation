@@ -3,7 +3,10 @@ import { STORAGE_STATE } from "../../playwright.config";
 import * as fs from "fs";
 
 test("Teardown", () => {
-  if (fs.existsSync(STORAGE_STATE)) {
-    fs.unlinkSync(STORAGE_STATE);
-  }
+  fs.unlink(STORAGE_STATE, (err) => {
+    if (err) {
+      console.log("File deletion failed: ", err);
+      return;
+    }
+  });
 });

@@ -2,12 +2,15 @@ import { test, expect } from "@playwright/test";
 import path from "path";
 import fs from "fs";
 
-test.describe("File Upload - practice.expandtesting.com", () => {
+test.describe("File Upload", () => {
   let filePath: string;
   test.afterEach("Delete file", async () => {
-    if (filePath && fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log("File deletion failed: ", err);
+        return;
+      }
+    });
   });
   test("should upload a file using file chooser", async ({ browser }) => {
     const page = await browser.newPage();

@@ -64,6 +64,7 @@ export default class FormCreationPage {
     await previewButton.click();
     // catch the promise which will be opening new page
     const pagePromise = this.page.waitForEvent("popup");
+    // as the new tab will be opened by this page only we are using popup
     // promise resolved and we will get the page
     const newPage = await pagePromise;
     // wait until the dom gets loaded
@@ -110,8 +111,6 @@ export default class FormCreationPage {
       .getByTestId(CREATE_FORM_ANALYTICS_SELECTORS.analyticsTab)
       .click();
   };
-
-  // here we are waiting for the UI to get updated with real details by providing it time
 
   verifyVisitCount = async (count: number) => {
     await expect(this.getVisitLocator()).toHaveText(count.toString(), {
