@@ -86,7 +86,7 @@ test.describe("Form Features", () => {
     await test.step("Publish form", () => formCreationPage.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Check email dependency of Email on Option 1 of single choice", async () => {
@@ -106,7 +106,7 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Check email has no dependency", async () => {

@@ -122,7 +122,7 @@ test.describe("Form Features", () => {
     await test.step("Publish the form", () => formCreationPage.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await new FormCreationPage(page).openFormPage(page.context());
+      formPage = await new FormCreationPage(page).openFormPage();
     });
 
     const formUrl = formPage.page.url();

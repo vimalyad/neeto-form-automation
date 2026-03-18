@@ -36,12 +36,15 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage(formCreationPage.page.context());
-      // we are adding this so that page gets enough time to load everything and send the pings to database
-      await formPage.page.waitForLoadState("networkidle");
+      formPage = await formCreationPage.openFormPage();
     });
 
-    await test.step("reload form creation page", () => formCreationPage.page.reload());
+    await test.step("reload form creation page", async () => {
+      // we are adding this so that page gets enough time to load everything and send the pings to database
+      await formPage.page.waitForLoadState('networkidle');
+      await formCreationPage.page.reload();
+      await formCreationPage.page.waitForLoadState("networkidle");
+    });
 
     await test.step("Verify visit count increased by one", () =>
       formCreationPage.verifyVisitCount(1));
@@ -49,15 +52,15 @@ test.describe("Form Features", () => {
     await test.step("Close the page", () => formPage.page.close());
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage(formCreationPage.page.context());
-      await formPage.page.waitForLoadState("networkidle");
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Fill email", () => formPage.fillEmail(mockUser.email));
 
     await test.step("reload form creation page", async () => {
-      await formCreationPage.page.waitForTimeout(2000);
+      await formPage.page.waitForLoadState('networkidle');
       await formCreationPage.page.reload();
+      await formCreationPage.page.waitForLoadState("networkidle");
     });
 
     await test.step("Verify visit count increased by one and start count increased by one", async () => {
@@ -68,7 +71,7 @@ test.describe("Form Features", () => {
     await test.step("Close the page", () => formPage.page.close());
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage(formCreationPage.page.context());
+      formPage = await formCreationPage.openFormPage();
       await formPage.page.waitForLoadState("networkidle");
     });
 
@@ -79,8 +82,9 @@ test.describe("Form Features", () => {
     await test.step("Verify submission", () => formPage.verifyThankYouOnPage());
 
     await test.step("reload form creation page", async () => {
-      await formCreationPage.page.waitForTimeout(2000);
+      await formPage.page.waitForLoadState('networkidle');
       await formCreationPage.page.reload();
+      await formCreationPage.page.waitForLoadState("networkidle");
     });
 
     await test.step("Verify visit count increased by one and start count increased by one and completionPercentage changed", async () => {

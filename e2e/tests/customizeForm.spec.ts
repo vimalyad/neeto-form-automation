@@ -56,7 +56,7 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Open published version of form", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
       await page.waitForLoadState("networkidle");
     });
 
@@ -96,7 +96,7 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Open published version of form", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Ensure the field is now visible on the published form.", () =>

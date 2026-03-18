@@ -106,7 +106,7 @@ test.describe("Form Features", () => {
     await test.step("Publish the form", () => formCreationPage.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await new FormCreationPage(page).openFormPage(page.context());
+      formPage = await new FormCreationPage(page).openFormPage();
     });
 
     await test.step("Fill email", () => formPage.fillEmail(email));
@@ -127,6 +127,11 @@ test.describe("Form Features", () => {
     await test.step("Verify and close page", async () => {
       await formPage.verifyThankYouOnPage();
       await formPage.page.close();
+    });
+
+    await test.step("reload form creation page", async () => {
+      await formCreationPage.page.reload();
+      await formCreationPage.page.waitForLoadState("networkidle");
     });
 
     await test.step("Open submissions tab", () =>

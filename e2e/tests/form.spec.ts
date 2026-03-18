@@ -34,7 +34,7 @@ test.describe("Form Features", () => {
 
         await test.step("Open created form", async () => {
             // page.context() gives us the BrowserContext
-            formPage = await formCreationPage.openFormPage(page.context());
+            formPage = await formCreationPage.openFormPage();
         });
 
         await test.step("Verify fields", async () => {
@@ -85,6 +85,8 @@ test.describe("Form Features", () => {
         await test.step("Close form page", () => formPage.page.close());
 
         await test.step("Verify submitted response", async () => {
+            await formCreationPage.page.reload();
+            await formCreationPage.page.waitForLoadState('networkidle');
             await formCreationPage.openSubmissionsTab();
             // as it is sorted by time so our submission will be on top
             const submissionRow = await formCreationPage.getSubmissionRow(

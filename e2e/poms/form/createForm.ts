@@ -54,7 +54,7 @@ export default class FormCreationPage {
     await this.page.getByTestId(CREATE_FORM_SELECTORS.publishButton).click();
   };
 
-  openFormPage = async (context: BrowserContext) => {
+  openFormPage = async () => {
     const previewButton = this.page.getByTestId(
       FORM_SELECTORS.publishPreviewButton,
     );
@@ -63,7 +63,7 @@ export default class FormCreationPage {
     // publish preview button clicked here
     await previewButton.click();
     // catch the promise which will be opening new page
-    const pagePromise = context.waitForEvent("page");
+    const pagePromise = this.page.waitForEvent("popup");
     // promise resolved and we will get the page
     const newPage = await pagePromise;
     // wait until the dom gets loaded
@@ -180,8 +180,6 @@ export default class FormCreationPage {
   };
 
   openSubmissionsTab = async () => {
-    await this.page.waitForTimeout(2000);
-    await this.page.reload();
     await this.page
       .getByTestId(CREATE_FORM_SUBMISSIONS_SELECTORS.submissionTab)
       .click();

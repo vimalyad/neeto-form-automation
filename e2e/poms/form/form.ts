@@ -14,8 +14,10 @@ export interface Name {
   lastName: string;
 }
 
+// nth used 0 based indexing
+
 export default class FormPage {
-  constructor(public page: Page) {}
+  constructor(public page: Page) { }
 
   verifyFullNameFieldExist = async () => {
     await expect(
@@ -58,15 +60,20 @@ export default class FormPage {
   };
 
   changeCountryIfNotAlready = async () => {
+    // get the country code
     const prefix = await this.page
       .getByTestId(FORM_SELECTORS.phoneNumberPrefix)
       .textContent();
+    // if the country code is already UnitedStates prefix return
     if (prefix?.trim() === FORM_COUNTRY_DETAILS.unitedStatesPhoneNumberPrefix)
       return;
+
     await this.page.locator(FORM_SELECTORS.selectCSS).click();
     await this.page
       .getByTestId(FORM_SELECTORS.countryCodeSearchInput)
       .fill(FORM_COUNTRY_DETAILS.unitedStates);
+    // by exact = false , we are saying do not look for only exact match
+    // better for substrings and case-insensitive
     await this.page
       .getByText(FORM_COUNTRY_DETAILS.unitedStates, { exact: false })
       .click();
@@ -77,6 +84,7 @@ export default class FormPage {
   };
 
   gotEmailError = async ({ emailPresent }: { emailPresent: boolean }) => {
+    // error will be base on whether email is present or not
     await expect(
       this.page.getByText(
         emailPresent
@@ -102,6 +110,7 @@ export default class FormPage {
     const startWithOneError = this.page.getByText(
       FORM_ERRORS_TEXT.usNumberError,
     );
+    // we used or here because we can get either of the error 
     await expect(invalidError.or(startWithOneError)).toBeVisible();
   };
 
@@ -180,6 +189,7 @@ export default class FormPage {
     await expect(
       this.page.getByTestId(FORM_SELECTORS.emailGroup),
     ).not.toBeAttached();
+    // it is used to check that the element is not part of DOM currently
   };
 
   selectOptionOfMultipleChoiceQuestion = async (optionNumber: number) => {
@@ -247,13 +257,14 @@ export default class FormPage {
     // Make sure we found a valid index
     expect(colIndex).toBeGreaterThan(-1);
 
-    // 3. Get the row
+    // Get the row
     const targetRow = this.page
       .getByTestId(FORM_SELECTORS.matrixTable)
       .locator("tr")
       .filter({ hasText: row });
+    // currently we have unique rows
 
-    // 4. Target the specific radio button by column index and assert it's checked
+    // Target the specific radio button by column index and assert it's checked
     await expect(
       targetRow.locator("input[type='radio']").nth(colIndex),
     ).toBeChecked();

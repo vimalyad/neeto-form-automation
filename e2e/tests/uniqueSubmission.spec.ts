@@ -20,7 +20,7 @@ test.describe("Form Features", () => {
       formCreationPage.deleteForm());
   });
 
-  test("Unique submissions", async ({ formCreationPage, page }) => {
+  test("Unique submissions", async ({ formCreationPage }) => {
     test.setTimeout(60000);
     await test.step("Publish form", () => formCreationPage.publishForm());
 
@@ -34,7 +34,7 @@ test.describe("Form Features", () => {
       formCreationPage.allowUniqueSubmission());
 
     await test.step("Open form button", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Fill form with email and submit and verify submission", async () => {
@@ -46,7 +46,7 @@ test.describe("Form Features", () => {
     await test.step("Close the form", () => formPage.page.close());
 
     await test.step("Close form and open new one", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Verify duplicate submission not allowed", async () => {
@@ -60,7 +60,7 @@ test.describe("Form Features", () => {
       formCreationPage.allowDuplicateSubmission());
 
     await test.step("open new one form", async () => {
-      formPage = await formCreationPage.openFormPage(page.context());
+      formPage = await formCreationPage.openFormPage();
     });
 
     await test.step("Fill form with email and submit", async () => {
