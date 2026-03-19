@@ -24,7 +24,7 @@ test.describe("Form Features", () => {
 
   test.beforeEach(async ({ dashboardPage, formCreationPage }) => {
     await dashboardPage.goToFormCreationPage();
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
 
     starRatingQuestion = faker.lorem.sentence({ min: 3, max: 8 });
     opinionScaleQuestion = faker.lorem.sentence({ min: 3, max: 8 });
@@ -46,7 +46,7 @@ test.describe("Form Features", () => {
 
   test.afterEach(async ({ formCreationPage }) => {
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Pre-fill form using URL parameters", async ({
@@ -56,83 +56,83 @@ test.describe("Form Features", () => {
   }) => {
 
     await test.step("Add a star rating, opinion scale and matrix fields", async () => {
-      await formCreationPage.openEmailSetting();
-      await formCreationPage.openAdvanceProperties();
-      identifierOfEmail = await formCreationPage.getEmailIdentifier();
+      await formCreationPage.buildTab.openEmailSetting();
+      await formCreationPage.buildTab.openAdvanceProperties();
+      identifierOfEmail = await formCreationPage.buildTab.getEmailIdentifier();
     });
 
     await test.step("Click add element button", () =>
-      formCreationPage.clickAddElementButton());
+      formCreationPage.buildTab.clickAddElementButton());
 
     await test.step("Add star rating element", () =>
-      formCreationPage.addStarRatingElement());
+      formCreationPage.buildTab.addStarRatingElement());
 
     await test.step("Fill question in Star Rating element", async () => {
-      await formCreationPage.openElementContextField();
-      await formCreationPage.fillTextInStarElement(starRatingQuestion);
+      await formCreationPage.buildTab.openElementContextField();
+      await formCreationPage.buildTab.fillTextInStarElement(starRatingQuestion);
     });
 
     await test.step("Get star element identifier", async () => {
-      await formCreationPage.openQuestionsSettingWindow(2);
-      await formCreationPage.openAdvanceProperties();
-      identifierOfStarRating = await formCreationPage.getStarRatingIdentifier();
+      await formCreationPage.buildTab.openQuestionsSettingWindow(2);
+      await formCreationPage.buildTab.openAdvanceProperties();
+      identifierOfStarRating = await formCreationPage.buildTab.getStarRatingIdentifier();
     });
 
     await test.step("Add opinion scale element", () =>
-      formCreationPage.addOpinionScaleElement());
+      formCreationPage.buildTab.addOpinionScaleElement());
 
     await test.step("Fill question in opinion scale element", async () => {
-      await formCreationPage.openElementContextField();
-      await formCreationPage.fillTextInOpinionScaleElement(
+      await formCreationPage.buildTab.openElementContextField();
+      await formCreationPage.buildTab.fillTextInOpinionScaleElement(
         opinionScaleQuestion,
       );
     });
 
     await test.step("Get opinion scale element identifier", async () => {
-      await formCreationPage.openQuestionsSettingWindow(3);
-      await formCreationPage.openAdvanceProperties();
+      await formCreationPage.buildTab.openQuestionsSettingWindow(3);
+      await formCreationPage.buildTab.openAdvanceProperties();
       identifierOfOpinionScale =
-        await formCreationPage.getOpinionScaleIdentifier();
+        await formCreationPage.buildTab.getOpinionScaleIdentifier();
     });
 
     await test.step("Add matrix element", () =>
-      formCreationPage.addMatrixElement());
+      formCreationPage.buildTab.addMatrixElement());
 
     await test.step("Fill text in Matrix element", () =>
-      formCreationPage.fillQuestionInMatrix(matrixText));
+      formCreationPage.buildTab.fillQuestionInMatrix(matrixText));
 
     await test.step("Fill rows and columns in Matrix element", async () => {
 
-      await formCreationPage.openInputFieldOfRowInMatrix(1);
+      await formCreationPage.buildTab.openInputFieldOfRowInMatrix(1);
       let waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfRowContainer(1, matrixRow1);
+      await formCreationPage.buildTab.fillInputFieldOfRowContainer(1, matrixRow1);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfRowInMatrix(2);
+      await formCreationPage.buildTab.openInputFieldOfRowInMatrix(2);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfRowContainer(2, matrixRow2);
+      await formCreationPage.buildTab.fillInputFieldOfRowContainer(2, matrixRow2);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfColInMatrix(1);
+      await formCreationPage.buildTab.openInputFieldOfColInMatrix(1);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfColContainer(1, matrixCol1);
+      await formCreationPage.buildTab.fillInputFieldOfColContainer(1, matrixCol1);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfColInMatrix(2);
+      await formCreationPage.buildTab.openInputFieldOfColInMatrix(2);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfColContainer(2, matrixCol2);
+      await formCreationPage.buildTab.fillInputFieldOfColContainer(2, matrixCol2);
       await waitForRecords;
     });
 
     await test.step("Get matrix element identifier", async () => {
-      await formCreationPage.openAdvanceProperties();
-      identifierOfMatrix = await formCreationPage.getMatrixIdentifier();
+      await formCreationPage.buildTab.openAdvanceProperties();
+      identifierOfMatrix = await formCreationPage.buildTab.getMatrixIdentifier();
     });
 
-    await test.step("Publish the form", () => formCreationPage.publishForm());
+    await test.step("Publish the form", () => formCreationPage.buildTab.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await new FormCreationPage(page).openFormPage();
+      formPage = await new FormCreationPage(page).buildTab.openFormPage();
     });
 
     let formUrl: string;

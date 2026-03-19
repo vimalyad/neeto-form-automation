@@ -23,7 +23,7 @@ export const openFormPageWithAttempts = async (formCreationPage: FormCreationPag
             res.url().includes(BACKEND_URL_PATTERNS.attemptsUrl) &&
             res.request().method() === "PATCH"
     );
-    const formPage = await formCreationPage.openFormPage();
+    const formPage = await formCreationPage.buildTab.openFormPage();
     await trackAttempts;
     return formPage;
 }
@@ -66,6 +66,6 @@ export const publishFormWait = async (formCreationPage: FormCreationPage) => {
             res.request().method() === "PUT" &&
             res.status() === 200
     );
-    await formCreationPage.publishForm();
+    await formCreationPage.buildTab.publishForm();
     await publishComplete;
 }

@@ -25,7 +25,7 @@ test.describe("Form Features", () => {
     await dashboardPage.goToFormCreationPage();
 
     // now click on create form
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
 
     email = faker.internet.email();
     opinionScaleRating = faker.number.int({ min: 1, max: 10 }).toString();
@@ -47,74 +47,74 @@ test.describe("Form Features", () => {
 
   // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
-    if (await formCreationPage.paneCloseButtonVisibility()) {
-      await formCreationPage.closePane();
+    if (await formCreationPage.submissionsTab.paneCloseButtonVisibility()) {
+      await formCreationPage.submissionsTab.closePane();
     }
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Download submissions", async ({ page, formCreationPage }) => {
     await test.step("Click add element button", () =>
-      formCreationPage.clickAddElementButton());
+      formCreationPage.buildTab.clickAddElementButton());
 
     await test.step("Add star rating element", () =>
-      formCreationPage.addStarRatingElement());
+      formCreationPage.buildTab.addStarRatingElement());
 
     await test.step("Fill question in Star Rating element", async () => {
-      await formCreationPage.openElementContextField();
-      await formCreationPage.fillTextInStarElement(starRatingQuestion);
+      await formCreationPage.buildTab.openElementContextField();
+      await formCreationPage.buildTab.fillTextInStarElement(starRatingQuestion);
     });
 
     await test.step("Add opinion scale element", () =>
-      formCreationPage.addOpinionScaleElement());
+      formCreationPage.buildTab.addOpinionScaleElement());
 
     await test.step("Open opinion scale question's setting window", () =>
-      formCreationPage.openQuestionsSettingWindow(3));
+      formCreationPage.buildTab.openQuestionsSettingWindow(3));
 
     await test.step("Fill question in opinion scale element", async () => {
-      await formCreationPage.openElementContextField();
-      await formCreationPage.fillTextInOpinionScaleElement(
+      await formCreationPage.buildTab.openElementContextField();
+      await formCreationPage.buildTab.fillTextInOpinionScaleElement(
         opinionScaleQuestion,
       );
     });
 
     await test.step("Add matrix element", () =>
-      formCreationPage.addMatrixElement());
+      formCreationPage.buildTab.addMatrixElement());
 
     await test.step("Open matrix's setting window", () =>
-      formCreationPage.openQuestionsSettingWindow(4));
+      formCreationPage.buildTab.openQuestionsSettingWindow(4));
 
     await test.step("Fill text in Matrix element", () =>
-      formCreationPage.fillQuestionInMatrix(matrixText));
+      formCreationPage.buildTab.fillQuestionInMatrix(matrixText));
 
     await test.step("Fill rows and columns in Matrix element", async () => {
 
-      await formCreationPage.openInputFieldOfRowInMatrix(1);
+      await formCreationPage.buildTab.openInputFieldOfRowInMatrix(1);
       let waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfRowContainer(1, matrixRow1);
+      await formCreationPage.buildTab.fillInputFieldOfRowContainer(1, matrixRow1);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfRowInMatrix(2);
+      await formCreationPage.buildTab.openInputFieldOfRowInMatrix(2);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfRowContainer(2, matrixRow2);
+      await formCreationPage.buildTab.fillInputFieldOfRowContainer(2, matrixRow2);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfColInMatrix(1);
+      await formCreationPage.buildTab.openInputFieldOfColInMatrix(1);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfColContainer(1, matrixCol1);
+      await formCreationPage.buildTab.fillInputFieldOfColContainer(1, matrixCol1);
       await waitForRecords;
 
-      await formCreationPage.openInputFieldOfColInMatrix(2);
+      await formCreationPage.buildTab.openInputFieldOfColInMatrix(2);
       waitForRecords = getWaitForRecordSaved(formCreationPage);
-      await formCreationPage.fillInputFieldOfColContainer(2, matrixCol2);
+      await formCreationPage.buildTab.fillInputFieldOfColContainer(2, matrixCol2);
       await waitForRecords;
     });
 
-    await test.step("Publish the form", () => formCreationPage.publishForm());
+    await test.step("Publish the form", () => formCreationPage.buildTab.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await new FormCreationPage(page).openFormPage();
+      formPage = await new FormCreationPage(page).buildTab.openFormPage();
     });
 
     await test.step("Fill email", () => formPage.fillEmail(email));
@@ -143,11 +143,11 @@ test.describe("Form Features", () => {
     });
 
     await test.step("Open submitted response", () =>
-      formCreationPage.openSubmittedResponse(1));
+      formCreationPage.submissionsTab.openSubmittedResponse(1));
 
     await test.step("Open dropdown and select pdf", async () => {
-      await formCreationPage.openDropdownForDownloadType();
-      await formCreationPage.checkDownloadAsPdf();
+      await formCreationPage.submissionsTab.openDropdownForDownloadType();
+      await formCreationPage.submissionsTab.checkDownloadAsPdf();
     });
 
     await test.step("Download and verify PDF", async () => {
@@ -155,7 +155,7 @@ test.describe("Form Features", () => {
 
       const popupPromise = formCreationPage.page.waitForEvent("popup");
 
-      await formCreationPage.downloadSubmissions();
+      await formCreationPage.submissionsTab.downloadSubmissions();
 
       downloadPage = await popupPromise;
       const request = await requestPromise;

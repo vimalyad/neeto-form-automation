@@ -11,29 +11,29 @@ test.describe("Form Features", () => {
     await dashboardPage.goToFormCreationPage();
 
     // now click on create form
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
   });
 
   // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Unique submissions", async ({ formCreationPage }) => {
-    await test.step("Publish form", () => formCreationPage.publishForm());
+    await test.step("Publish form", () => formCreationPage.buildTab.publishForm());
 
     await test.step("Open settings tab", () =>
       formCreationPage.openSettingsTab());
 
     await test.step("Unique submission Card", () =>
-      formCreationPage.openUniqueSubmissionCard());
+      formCreationPage.settingsTab.openUniqueSubmissionCard());
 
     await test.step("Check unique cookies", () =>
-      formCreationPage.allowUniqueSubmission());
+      formCreationPage.settingsTab.allowUniqueSubmission());
 
     await test.step("Open form button", async () => {
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
     });
 
     await test.step("Fill form with email and submit and verify submission", async () => {
@@ -46,7 +46,7 @@ test.describe("Form Features", () => {
     await test.step("Close the form", () => formPage.page.close());
 
     await test.step("Close form and open new one", async () => {
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
     });
 
     await test.step("Verify duplicate submission not allowed", async () => {
@@ -57,10 +57,10 @@ test.describe("Form Features", () => {
     await test.step("Close the form", () => formPage.page.close());
 
     await test.step("Allow duplicate submission", () =>
-      formCreationPage.allowDuplicateSubmission());
+      formCreationPage.settingsTab.allowDuplicateSubmission());
 
     await test.step("open new one form", async () => {
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
     });
 
     await test.step("Fill form with email and submit", async () => {

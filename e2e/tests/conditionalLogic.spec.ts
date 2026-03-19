@@ -10,27 +10,27 @@ test.describe("Form Features", () => {
     await dashboardPage.goToFormCreationPage();
 
     // now click on create form
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
   });
 
   // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Conditional logic", async ({ formCreationPage }) => {
 
     await test.step("Delete Email Element", async () => {
-      await formCreationPage.openEmailDetailsDropdown();
-      await formCreationPage.deleteEmailElement();
+      await formCreationPage.buildTab.openEmailDetailsDropdown();
+      await formCreationPage.buildTab.deleteEmailElement();
     });
 
     await test.step("Add single choice with element only two options", async () => {
       // click add element button
-      await formCreationPage.clickAddElementButton();
-      await formCreationPage.addSingleChoiceElement();
-      await formCreationPage.verifyLoadingSpinnerInvisible();
+      await formCreationPage.buildTab.clickAddElementButton();
+      await formCreationPage.buildTab.addSingleChoiceElement();
+      await formCreationPage.buildTab.verifyLoadingSpinnerInvisible();
       // add pointer to first question
       const questionBlock = formCreationPage.page
         .getByTestId(CREATE_FORM_SELECTORS.formGroupQuestion)
@@ -41,51 +41,51 @@ test.describe("Form Features", () => {
       // click on question to open settings page
       await questionBlock.click();
 
-      await formCreationPage.verifyAddOptionButtonVisible();
+      await formCreationPage.buildTab.verifyAddOptionButtonVisible();
 
-      await formCreationPage.checkOptionVisible(4);
-      await formCreationPage.clickOption(4);
-      await formCreationPage.deleteOptionButtonVisible(4);
-      await formCreationPage.deleteOption(4);
-      await formCreationPage.checkOptionHidden(4);
+      await formCreationPage.buildTab.checkOptionVisible(4);
+      await formCreationPage.buildTab.clickOption(4);
+      await formCreationPage.buildTab.deleteOptionButtonVisible(4);
+      await formCreationPage.buildTab.deleteOption(4);
+      await formCreationPage.buildTab.checkOptionHidden(4);
 
-      await formCreationPage.checkOptionVisible(3);
-      await formCreationPage.clickOption(3);
-      await formCreationPage.deleteOptionButtonVisible(3);
-      await formCreationPage.deleteOption(3);
-      await formCreationPage.checkOptionHidden(3);
+      await formCreationPage.buildTab.checkOptionVisible(3);
+      await formCreationPage.buildTab.clickOption(3);
+      await formCreationPage.buildTab.deleteOptionButtonVisible(3);
+      await formCreationPage.buildTab.deleteOption(3);
+      await formCreationPage.buildTab.checkOptionHidden(3);
     });
 
     await test.step("Add Email Element", () =>
-      formCreationPage.addEmailElement());
+      formCreationPage.buildTab.addEmailElement());
 
     await test.step("Open settings tab", () =>
       formCreationPage.openSettingsTab());
 
     await test.step("Open conditional logic card", () =>
-      formCreationPage.openConditionalLogicCard());
+      formCreationPage.settingsTab.openConditionalLogicCard());
 
     await test.step("Add email dependency over option 1 of single choice", async () => {
-      await formCreationPage.addNewCondition();
-      await formCreationPage.verifySelectValueContainerFieldVisibleInCondition();
-      await formCreationPage.openDependencyFromSelectValueContainerFieldInCondition();
-      await formCreationPage.selectQuestionAsDependencyFromSelectValueContainerFieldInCondition();
-      await formCreationPage.openVerbSelectValueContainerFieldInCondition();
-      await formCreationPage.selectIsEqualToVerbInSelectValueContainerFieldInCondition();
-      await formCreationPage.openDependencyValueContainerInCondition();
-      await formCreationPage.selectOptionOneAsDependencyValueInCondition();
-      await formCreationPage.openActionInputFieldInContainerInCondition();
-      await formCreationPage.selectShowActionInCondition();
-      await formCreationPage.openConditionResultInContainerInCondition();
-      await formCreationPage.selectEmailAsConditionalResult();
-      await formCreationPage.saveFormChangesButton();
-      await formCreationPage.verifySaveChangesButtonHidden();
+      await formCreationPage.settingsTab.addNewCondition();
+      await formCreationPage.settingsTab.verifySelectValueContainerFieldVisibleInCondition();
+      await formCreationPage.settingsTab.openDependencyFromSelectValueContainerFieldInCondition();
+      await formCreationPage.settingsTab.selectQuestionAsDependencyFromSelectValueContainerFieldInCondition();
+      await formCreationPage.settingsTab.openVerbSelectValueContainerFieldInCondition();
+      await formCreationPage.settingsTab.selectIsEqualToVerbInSelectValueContainerFieldInCondition();
+      await formCreationPage.settingsTab.openDependencyValueContainerInCondition();
+      await formCreationPage.settingsTab.selectOptionOneAsDependencyValueInCondition();
+      await formCreationPage.settingsTab.openActionInputFieldInContainerInCondition();
+      await formCreationPage.settingsTab.selectShowActionInCondition();
+      await formCreationPage.settingsTab.openConditionResultInContainerInCondition();
+      await formCreationPage.settingsTab.selectEmailAsConditionalResult();
+      await formCreationPage.settingsTab.saveFormChangesButton();
+      await formCreationPage.settingsTab.verifySaveChangesButtonHidden();
     });
 
-    await test.step("Publish form", () => formCreationPage.publishForm());
+    await test.step("Publish form", () => formCreationPage.buildTab.publishForm());
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
     });
 
     await test.step("Check email dependency of Email on Option 1 of single choice", async () => {
@@ -100,12 +100,12 @@ test.describe("Form Features", () => {
     await test.step("Close form page", () => formPage.page.close());
 
     await test.step("Remove email dependency", async () => {
-      await formCreationPage.openConditionalLogicDropdown();
-      await formCreationPage.disableConditionalLogic();
+      await formCreationPage.settingsTab.openConditionalLogicDropdown();
+      await formCreationPage.settingsTab.disableConditionalLogic();
     });
 
     await test.step("Open form page", async () => {
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
     });
 
     await test.step("Check email has no dependency", async () => {

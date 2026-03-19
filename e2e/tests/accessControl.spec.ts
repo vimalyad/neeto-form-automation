@@ -15,7 +15,7 @@ test.describe("Form Features", () => {
     await dashboardPage.goToFormCreationPage();
 
     // now click on create form
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
 
     // get the mock data
     mockUser = getMockData();
@@ -26,7 +26,7 @@ test.describe("Form Features", () => {
   // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Access control the form with password protection", async ({
@@ -34,7 +34,7 @@ test.describe("Form Features", () => {
     browser,
   }) => {
     // publish the form 
-    await test.step("Publish form", () => formCreationPage.publishForm());
+    await test.step("Publish form", () => formCreationPage.buildTab.publishForm());
 
     // open settings tab
     await test.step("Open settings tab", () =>
@@ -42,37 +42,37 @@ test.describe("Form Features", () => {
 
     // open the access control card
     await test.step("Open Access control card", () =>
-      formCreationPage.openAccessControlCard());
+      formCreationPage.settingsTab.openAccessControlCard());
 
     // select securing with password
     await test.step("Select 'Secure with password' option", () =>
-      formCreationPage.setSecurePasswordToForm());
+      formCreationPage.settingsTab.setSecurePasswordToForm());
 
     await test.step("Verify password field validations", async () => {
       // try with no password
-      await formCreationPage.setSecurePassword();  // save password
-      await formCreationPage.saveFormChangesButton();
+      await formCreationPage.settingsTab.setSecurePassword();  // save password
+      await formCreationPage.settingsTab.saveFormChangesButton();
       // should get error
-      await formCreationPage.gotSecurePasswordError();
+      await formCreationPage.settingsTab.gotSecurePasswordError();
 
       // try with password only numbers
-      await formCreationPage.setSecurePassword("123");
-      await formCreationPage.saveFormChangesButton();
-      await formCreationPage.gotSecurePasswordError(); // should get error
+      await formCreationPage.settingsTab.setSecurePassword("123");
+      await formCreationPage.settingsTab.saveFormChangesButton();
+      await formCreationPage.settingsTab.gotSecurePasswordError(); // should get error
 
       // try with password less than 3 length
-      await formCreationPage.setSecurePassword("abc");
-      await formCreationPage.saveFormChangesButton(); // should get error
-      await formCreationPage.gotSecurePasswordError();
+      await formCreationPage.settingsTab.setSecurePassword("abc");
+      await formCreationPage.settingsTab.saveFormChangesButton(); // should get error
+      await formCreationPage.settingsTab.gotSecurePasswordError();
     });
 
     await test.step("Enter password and save changes", async () => {
-      await formCreationPage.setSecurePassword(password); // set valid secure password and save
-      await formCreationPage.saveFormChangesButton();
+      await formCreationPage.settingsTab.setSecurePassword(password); // set valid secure password and save
+      await formCreationPage.settingsTab.saveFormChangesButton();
     });
     await test.step("Verify form is password protected in a clean session", async () => {
       // get the formPage
-      formPage = await formCreationPage.openFormPage();
+      formPage = await formCreationPage.buildTab.openFormPage();
 
       // extract the url from formPage
       const formUrl = formPage.page.url();
@@ -115,7 +115,7 @@ test.describe("Form Features", () => {
       const submissionsLoaded = getSubmissionsLoaded(formCreationPage);
       await submissionsLoaded;
       // verify response
-      await formCreationPage.verifyResponse(mockUser.email);
+      await formCreationPage.submissionsTab.verifyResponse(mockUser.email);
     });
   });
 });

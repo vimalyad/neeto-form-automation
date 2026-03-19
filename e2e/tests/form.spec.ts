@@ -13,24 +13,24 @@ test.describe("Form Features", () => {
         await dashboardPage.goToFormCreationPage();
 
         // now click on create form
-        await formCreationPage.createForm();
+        await formCreationPage.buildTab.createForm();
     });
 
     // clear the created forms
     test.afterEach(async ({ formCreationPage }) => {
         await test.step("Cleanup: Delete form", async () =>
-            formCreationPage.deleteForm());
+            formCreationPage.buildTab.deleteForm());
     });
 
     test("Create and submit a form", async ({ formCreationPage }) => {
 
         await test.step("Add name and phone number fields", async () => {
-            await formCreationPage.clickAddElementButton();
-            await formCreationPage.addNameElement();
-            await formCreationPage.addPhoneNumberElement();
+            await formCreationPage.buildTab.clickAddElementButton();
+            await formCreationPage.buildTab.addNameElement();
+            await formCreationPage.buildTab.addPhoneNumberElement();
         });
 
-        await test.step("publish form page", () => formCreationPage.publishForm());
+        await test.step("publish form page", () => formCreationPage.buildTab.publishForm());
 
         await test.step("Open created form", async () => {
             formPage = await openFormPageWithAttempts(formCreationPage);
@@ -92,7 +92,7 @@ test.describe("Form Features", () => {
             await submissionsLoaded;
 
             // as it is sorted by time so our submission will be on top
-            const submissionRow = await formCreationPage.getSubmissionRow(
+            const submissionRow = await formCreationPage.submissionsTab.getSubmissionRow(
                 mockUser.email,
             );
             await expect(submissionRow).toBeVisible();

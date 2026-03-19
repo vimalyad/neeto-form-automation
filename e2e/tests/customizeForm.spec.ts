@@ -13,41 +13,41 @@ test.describe("Form Features", () => {
     await dashboardPage.goToFormCreationPage();
 
     // now click on create form
-    await formCreationPage.createForm();
+    await formCreationPage.buildTab.createForm();
   });
 
   // clear the created forms
   test.afterEach(async ({ formCreationPage }) => {
     await test.step("Cleanup: Delete form", async () =>
-      formCreationPage.deleteForm());
+      formCreationPage.buildTab.deleteForm());
   });
 
   test("Customize form's field elements", async ({
     formCreationPage,
   }) => {
     await test.step("Add single choice element with 6 additional options", async () => {
-      await formCreationPage.clickAddElementButton();
-      await formCreationPage.addSingleChoiceElement();
-      await formCreationPage.verifyAddOptionButtonVisible();
+      await formCreationPage.buildTab.clickAddElementButton();
+      await formCreationPage.buildTab.addSingleChoiceElement();
+      await formCreationPage.buildTab.verifyAddOptionButtonVisible();
       for (let i = 0; i < 6; i++) {
-        await formCreationPage.addOption();
+        await formCreationPage.buildTab.addOption();
       }
     });
 
     await test.step("Randomize the options of single element", () =>
-      formCreationPage.randomizeSingleChoiceQuestionOptions());
+      formCreationPage.buildTab.randomizeSingleChoiceQuestionOptions());
 
     await test.step("Add multi choice element with 6 additional options", async () => {
-      await formCreationPage.addMultiChoiceElement();
-      await formCreationPage.openQuestionsSettingWindow(3);
-      await formCreationPage.verifyAddOptionButtonVisible();
+      await formCreationPage.buildTab.addMultiChoiceElement();
+      await formCreationPage.buildTab.openQuestionsSettingWindow(3);
+      await formCreationPage.buildTab.verifyAddOptionButtonVisible();
       for (let i = 0; i < 6; i++) {
-        await formCreationPage.addOption();
+        await formCreationPage.buildTab.addOption();
       }
     });
 
     await test.step("Hide the multi choice question", () =>
-      formCreationPage.toggleMultiChoiceQuestionVisibility(false));
+      formCreationPage.buildTab.toggleMultiChoiceQuestionVisibility(false));
 
     await test.step("Publish the form", async () => {
       await publishFormWait(formCreationPage);
@@ -86,7 +86,7 @@ test.describe("Form Features", () => {
     await test.step("Close opened form page", () => formPage.page.close());
 
     await test.step("Uncheck the hide option of multi choice element", () =>
-      formCreationPage.toggleMultiChoiceQuestionVisibility(true));
+      formCreationPage.buildTab.toggleMultiChoiceQuestionVisibility(true));
 
     await test.step("Publish the form", async () => {
       await publishFormWait(formCreationPage);
